@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -39,6 +40,17 @@
         /* Mobile menu */
         #mobile-menu { display: none; }
         #mobile-menu.open { display: block; }
+
+        /* Scroll reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="bg-bgDark text-textMain font-sans antialiased selection:bg-accent selection:text-bgDark">
@@ -56,6 +68,7 @@
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
                         <a href="#about" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="#dashboard" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                         <a href="#projects" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
                         <a href="#cv" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
                         <a href="#teaching" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
@@ -67,6 +80,7 @@
             <!-- Mobile menu -->
             <div id="mobile-menu" class="md:hidden pb-4 space-y-2">
                 <a href="#about" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                <a href="#dashboard" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                 <a href="#projects" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
                 <a href="#cv" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
                 <a href="#teaching" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
@@ -149,6 +163,39 @@
         </div>
     </section>
 
+    <section id="dashboard" class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold mb-3 border-l-4 border-accent pl-4">Climate Dashboard</h2>
+        <p class="text-textMuted mb-10 pl-5">Live data on the economics of climate change — the core of my research.</p>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+
+            <!-- CO2 Chart — Live from global-warming.org API -->
+            <div class="p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-white">Atmospheric CO₂ Concentration</h3>
+                    <span id="co2-latest" class="text-xs text-accent font-mono"></span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="co2Chart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Source: NOAA/GML via <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API. Monthly readings, Mauna Loa.</p>
+            </div>
+
+            <!-- Carbon Prices — Chart.js bar chart -->
+            <div class="p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-white">Carbon Prices in Major ETSs</h3>
+                    <span class="text-xs text-slate-500">USD / tCO₂ · Updated Mar 2026</span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="carbonChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank" class="text-slate-500 hover:text-accent">CarbonCredits.com</a>, <a href="https://icapcarbonaction.com/en/ets-prices" target="_blank" class="text-slate-500 hover:text-accent">ICAP</a>, <a href="https://ember-energy.org" target="_blank" class="text-slate-500 hover:text-accent">EMBER</a>.</p>
+            </div>
+
+        </div>
+    </section>
+
     <section id="projects" class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold mb-10 border-l-4 border-accent pl-4">Active Projects</h2>
         <div class="space-y-6">
@@ -193,7 +240,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-10">
                 <h2 class="text-3xl font-bold border-l-4 border-accent pl-4">Curriculum Vitae</h2>
-                <a href="CV-TuncDurmaz_ Jul_2025.pdf" target="_blank" class="mt-4 md:mt-0 inline-flex items-center bg-accent text-bgDark hover:bg-white transition-colors px-5 py-2 rounded-lg font-bold text-sm">
+                <a href="CV-TuncDurmaz.pdf" target="_blank" class="mt-4 md:mt-0 inline-flex items-center bg-accent text-bgDark hover:bg-white transition-colors px-5 py-2 rounded-lg font-bold text-sm">
                     <i class="fa-solid fa-download mr-2"></i> Download Full CV (PDF)
                 </a>
             </div>
@@ -545,6 +592,175 @@
                 }
             });
         }
+
+        // ── Climate Dashboard — Live CO₂ Chart ──
+        const chartDefaults = {
+            color: '#94a3b8',
+            borderColor: '#334155',
+            font: { family: 'Inter, sans-serif' }
+        };
+        Chart.defaults.color = chartDefaults.color;
+        Chart.defaults.font.family = chartDefaults.font.family;
+
+        async function loadCO2Chart() {
+            const canvas = document.getElementById('co2Chart');
+            if (!canvas) return;
+
+            // Fallback static data in case API fails
+            let labels = [1960,1970,1980,1990,2000,2010,2020,2025];
+            let values = [316.9,325.7,338.8,354.4,369.7,389.9,414.2,427.0];
+
+            try {
+                const res = await fetch('https://global-warming.org/api/co2-api');
+                const data = await res.json();
+                if (data && data.co2) {
+                    // Group by year, compute annual averages
+                    const yearly = {};
+                    data.co2.forEach(d => {
+                        const yr = parseInt(d.year);
+                        if (!yr || yr < 1960) return;
+                        if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
+                        yearly[yr].sum += parseFloat(d.cycle);
+                        yearly[yr].count++;
+                    });
+                    const years = Object.keys(yearly).map(Number).sort((a, b) => a - b);
+                    // Sample every 2 years for readability, always include the latest
+                    labels = years.filter((y, i) => y % 2 === 0 || y === years[years.length - 1]);
+                    values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(1));
+
+                    // Show latest reading
+                    const latestEntry = data.co2[data.co2.length - 1];
+                    if (latestEntry) {
+                        document.getElementById('co2-latest').textContent = 
+                            `Latest: ${parseFloat(latestEntry.cycle).toFixed(1)} ppm (${latestEntry.year}.${latestEntry.month})`;
+                    }
+                }
+            } catch (e) {
+                console.log('CO₂ API unavailable, using fallback data');
+                document.getElementById('co2-latest').textContent = 'Mauna Loa Observatory';
+            }
+
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CO₂ (ppm)',
+                        data: values,
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249,115,22,0.08)',
+                        borderWidth: 2.5,
+                        pointRadius: 2,
+                        pointBackgroundColor: '#f97316',
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            borderColor: '#475569',
+                            borderWidth: 1,
+                            titleColor: '#f1f5f9',
+                            bodyColor: '#94a3b8',
+                            callbacks: {
+                                label: ctx => `${ctx.parsed.y} ppm`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(51,65,85,0.4)' },
+                            ticks: { maxTicksLimit: 10, font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(51,65,85,0.4)' },
+                            ticks: { callback: v => v + ' ppm' }
+                        }
+                    }
+                }
+            });
+        }
+
+        loadCO2Chart();
+
+        // ── Carbon Prices in Major ETSs ──
+        // To update: change the values below and the date in the HTML header
+        // Latest prices from ICAP, CarbonCredits.com, and EMBER (March 2026)
+        const etsData = [
+            { name: 'EU ETS',         price: 70, color: '#38bdf8' },
+            { name: 'UK ETS',         price: 50, color: '#60a5fa' },
+            { name: 'California\nCaT', price: 38, color: '#818cf8' },
+            { name: 'New Zealand',    price: 33, color: '#a78bfa' },
+            { name: 'South Korea',    price: 8,  color: '#c084fc' },
+            { name: 'China ETS',      price: 13, color: '#e879f9' },
+        ];
+
+        new Chart(document.getElementById('carbonChart'), {
+            type: 'bar',
+            data: {
+                labels: etsData.map(d => d.name),
+                datasets: [{
+                    label: 'USD / tCO₂',
+                    data: etsData.map(d => d.price),
+                    backgroundColor: etsData.map(d => d.color + 'cc'),
+                    borderColor: etsData.map(d => d.color),
+                    borderWidth: 1.5,
+                    borderRadius: 6,
+                    hoverBackgroundColor: etsData.map(d => d.color)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                interaction: { intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        borderColor: '#475569',
+                        borderWidth: 1,
+                        titleColor: '#f1f5f9',
+                        bodyColor: '#94a3b8',
+                        callbacks: {
+                            label: ctx => `$${ctx.parsed.x} / tCO₂`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { size: 12 } }
+                    },
+                    x: {
+                        grid: { color: 'rgba(51,65,85,0.4)' },
+                        ticks: { callback: v => '$' + v },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // ── Scroll reveal ──
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section > div, section > .space-y-6, .grid').forEach(el => {
+            el.classList.add('reveal');
+            observer.observe(el);
+        });
     </script>
 
 </body>
