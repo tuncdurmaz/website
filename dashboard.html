@@ -397,8 +397,8 @@
         // ── To update: change values below and the date in the HTML header ──
         // ── Latest prices from ICAP, CarbonCredits.com, EMBER (March 2026) ──
         
-        async function loadCarbonChart() {
-    // 1. Static fallback data (used if the live fetch fails)
+    async function loadCarbonChart() {
+    // 1. Static fallback data
     let etsData =[
         { name: 'EU ETS',          price: 70, color: '#38bdf8' },
         { name: 'UK ETS',          price: 50, color: '#60a5fa' },
@@ -409,26 +409,38 @@
     ];
 
     try {
-        // 2. Fetch live EU ETS price using Yahoo Finance (Ticker: KE=F) via a free CORS proxy
+        // 2. Fetch live Physical Carbon EUA ETC (CO2.MI) in Euros and the EUR/USD exchange rate
         const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const targetUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/KE=F');
+        const euaUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/CO2.MI');
+        const eurUsdUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/EURUSD=X');
         
-        const response = await fetch(proxyUrl + targetUrl, { cache: "no-store" });
+        // Fetch both the carbon price and currency exchange rate at the same time
+        const[resEua, resFx] = await Promise.all([
+            fetch(proxyUrl + euaUrl, { cache: "no-store" }),
+            fetch(proxyUrl + eurUsdUrl, { cache: "no-store" })
+        ]);
         
-        if (response.ok) {
-            const data = await response.json();
-            // Extract the live market price from the Yahoo Finance JSON structure
-            const liveEuPrice = data.chart.result[0].meta.regularMarketPrice;
+        if (resEua.ok && resFx.ok) {
+            const dataEua = await resEua.json();
+            const dataFx = await resFx.json();
             
-            if (liveEuPrice) {
-                // Update the EU ETS object with the live price
-                etsData.find(d => d.name === 'EU ETS').price = parseFloat(liveEuPrice.toFixed(2));
+            // Extract the live market prices from the JSON structures
+            const euaEurPrice = dataEua.chart.result[0].meta.regularMarketPrice;
+            const eurUsdRate = dataFx.chart.result[0].meta.regularMarketPrice;
+            
+            if (euaEurPrice && eurUsdRate) {
+                // Convert the Euro price to USD
+                const liveEuPriceUsd = euaEurPrice * eurUsdRate;
                 
-                // Update the dashboard UI to show it was successfully fetched live
-                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                // Update the EU ETS object with the accurate live USD price
+                etsData.find(d => d.name === 'EU ETS').price = parseFloat(liveEuPriceUsd.toFixed(2));
+                
+                // Update the dashboard UI
                 const updateLabel = document.getElementById('carbon-latest');
-                updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
-                updateLabel.classList.replace('text-slate-500', 'text-accent');
+                if (updateLabel) {
+                    updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
+                    updateLabel.classList.replace('text-slate-500', 'text-accent');
+                }
             }
         }
     } catch (error) {
@@ -457,11 +469,11 @@
             interaction: { intersect: false },
             plugins: { 
                 legend: { display: false }, 
-                tooltip: { ...tooltipStyle, callbacks: { label: ctx => `$${ctx.parsed.x} / tCO₂` } } 
+                tooltip: { backgroundColor: '#1e293b', borderColor: '#475569', borderWidth: 1, titleColor: '#f1f5f9', bodyColor: '#94a3b8', callbacks: { label: ctx => `$${ctx.parsed.x} / tCO₂` } } 
             },
             scales: {
                 y: { grid: { display: false }, ticks: { font: { size: 12 } } },
-                x: { grid: { color: gridColor }, ticks: { callback: v => '$' + v }, beginAtZero: true }
+                x: { grid: { color: 'rgba(51,65,85,0.4)' }, ticks: { callback: v => '$' + v }, beginAtZero: true }
             }
         }
     });
