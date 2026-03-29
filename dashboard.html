@@ -391,8 +391,8 @@
             });
         }
 
-      // ══════════════════════════════════════════════
-        // 4. CARBON PRICES (Instant Load + Background Fetch)
+// ══════════════════════════════════════════════
+        // 4. CARBON PRICES (Resilient Multi-Proxy + Background Fetch)
         // ══════════════════════════════════════════════
         async function loadCarbonChart() {
             // 1. Static fallback data
@@ -407,7 +407,7 @@
 
             const updateLabel = document.getElementById('carbon-latest');
 
-            // 2. IMMEDIATELY draw the chart using static data (ZERO visual delay)
+            // 2. IMMEDIATELY draw the chart using static data
             const ctx = document.getElementById('carbonChart');
             const carbonChart = new Chart(ctx, {
                 type: 'bar',
@@ -424,18 +424,13 @@
                     }]
                 },
                 options: {
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    indexAxis: 'y',
+                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
                     interaction: { intersect: false },
                     plugins: { 
                         legend: { display: false }, 
                         tooltip: { 
-                            backgroundColor: '#1e293b', 
-                            borderColor: '#475569', 
-                            borderWidth: 1, 
-                            titleColor: '#f1f5f9', 
-                            bodyColor: '#94a3b8', 
+                            backgroundColor: '#1e293b', borderColor: '#475569', borderWidth: 1, 
+                            titleColor: '#f1f5f9', bodyColor: '#94a3b8', 
                             callbacks: { label: ctx => `$${ctx.parsed.x.toFixed(2)} / tCO₂` } 
                         } 
                     },
@@ -446,61 +441,69 @@
                 }
             });
 
-            // 3. Set UI label to show it is attempting a background fetch
             if (updateLabel) {
                 updateLabel.innerHTML = `Checking live data... <i class="fa-solid fa-spinner fa-spin ml-1 text-slate-500"></i>`;
             }
 
-            // 4. Try fetching live data in the background (with a strict 4-second cutoff)
-            try {
-                const fetchWithTimeout = async (url, ms = 4000) => {
-                    const controller = new AbortController();
-                    const id = setTimeout(() => controller.abort(), ms);
-                    const response = await fetch(url, { signal: controller.signal });
-                    clearTimeout(id);
-                    return response;
-                };
-
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const euaUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/CO2.MI');
-                const eurUsdUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/EURUSD=X');
+            // 3. Smart Proxy Function to bypass Yahoo blocks
+            async function fetchYahooSecure(url) {
+                // Primary tactic: AllOrigins using /get wrapper 
+                try {
+                    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json.contents) return JSON.parse(json.contents);
+                    }
+                } catch(e) {}
                 
-                const[resEua, resFx] = await Promise.all([
-                    fetchWithTimeout(proxyUrl + euaUrl),
-                    fetchWithTimeout(proxyUrl + eurUsdUrl)
+                // Secondary fallback: CodeTabs proxy
+                try {
+                    const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${url}`);
+                    if (res.ok) return await res.json();
+                } catch(e) {}
+                
+                throw new Error("Financial API securely blocked both proxy servers");
+            }
+
+            // 4. Execute the fetches in the background
+            try {
+                // Using Yahoo Finance's alternative v8 endpoint
+                const euaUrl = 'https://query2.finance.yahoo.com/v8/finance/chart/CO2.MI';
+                const eurUsdUrl = 'https://query2.finance.yahoo.com/v8/finance/chart/EURUSD=X';
+                
+                const [dataEua, dataFx] = await Promise.all([
+                    fetchYahooSecure(euaUrl),
+                    fetchYahooSecure(eurUsdUrl)
                 ]);
                 
-                if (resEua.ok && resFx.ok) {
-                    const dataEua = await resEua.json();
-                    const dataFx = await resFx.json();
+                // Check if the deeply nested Yahoo Finance payload successfully loaded
+                if (dataEua?.chart?.result?.[0]?.meta?.regularMarketPrice && 
+                    dataFx?.chart?.result?.[0]?.meta?.regularMarketPrice) {
                     
                     const euaEurPrice = dataEua.chart.result[0].meta.regularMarketPrice;
                     const eurUsdRate = dataFx.chart.result[0].meta.regularMarketPrice;
                     
-                    if (euaEurPrice && eurUsdRate) {
-                        const liveEuPriceUsd = euaEurPrice * eurUsdRate;
-                        
-                        // Update the chart dynamically with the live price
-                        carbonChart.data.datasets[0].data[0] = parseFloat(liveEuPriceUsd.toFixed(2));
-                        carbonChart.update(); // Visually animates the change!
-                        
-                        if (updateLabel) {
-                            updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
-                            updateLabel.classList.replace('text-slate-500', 'text-accent');
-                        }
+                    const liveEuPriceUsd = euaEurPrice * eurUsdRate;
+                    
+                    // Tell the chart to magically slide to the new real-time value
+                    carbonChart.data.datasets[0].data[0] = parseFloat(liveEuPriceUsd.toFixed(2));
+                    carbonChart.update(); 
+                    
+                    // Success interface
+                    if (updateLabel) {
+                        updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
+                        updateLabel.classList.replace('text-slate-500', 'text-accent');
                     }
                 } else {
-                    throw new Error("Proxy request was blocked.");
+                    throw new Error("Proxy succeeded but Yahoo returned bad data structure");
                 }
             } catch (error) {
-                // If it fails, the chart remains completely unharmed and already fully loaded.
-                console.warn("Live fetch failed, using instant static data.", error);
+                console.warn("Live fetch dynamically bypassed; staying with instant static data.", error);
                 if (updateLabel) {
                     updateLabel.innerHTML = `Using Static Fallback <i class="fa-solid fa-triangle-exclamation text-yellow-500 ml-1"></i>`;
                 }
             }
         }
-
 
 
         // ══════════════════════════════════════════════
