@@ -463,7 +463,7 @@ Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank
                     // NEW: Inject the exchange rate footnote below the chart
                     const exchangeFootnote = document.getElementById('exchange-rate-footnote');
                     if (exchangeFootnote && data.exchange_rate) {
-                        exchangeFootnote.innerHTML = `Live Conversion: ${data.exchange_rate}`;
+                        exchangeFootnote.innerHTML = `Live Conversion: ${data.exchange_rate}. Apart from EU ETS carbon price, the data are manually curated.`;
                     }
                 }
             } catch (error) {
