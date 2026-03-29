@@ -154,7 +154,7 @@
                         <h3 class="text-lg font-bold text-white">Carbon Prices in Major ETSs</h3>
                         <p class="text-xs text-slate-500 mt-0.5">USD per tonne CO₂ equivalent</p>
                     </div>
-                    <span class="text-xs text-slate-500">Updated Mar 2026</span>
+                    <span id="carbon-latest" class="text-xs text-slate-500">Updated Mar 2026</span>
                 </div>
                 <div class="relative" style="height: 320px;">
                     <canvas id="carbonChart"></canvas>
@@ -396,37 +396,76 @@
         // ══════════════════════════════════════════════
         // ── To update: change values below and the date in the HTML header ──
         // ── Latest prices from ICAP, CarbonCredits.com, EMBER (March 2026) ──
-        const etsData = [
-            { name: 'EU ETS',          price: 70, color: '#38bdf8' },
-            { name: 'UK ETS',          price: 50, color: '#60a5fa' },
-            { name: 'California CaT',  price: 38, color: '#818cf8' },
-            { name: 'New Zealand',     price: 33, color: '#a78bfa' },
-            { name: 'China ETS',       price: 13, color: '#e879f9' },
-            { name: 'South Korea',     price: 8,  color: '#c084fc' },
-        ];
+        
+        async function loadCarbonChart() {
+    // 1. Static fallback data (used if the live fetch fails)
+    let etsData =[
+        { name: 'EU ETS',          price: 70, color: '#38bdf8' },
+        { name: 'UK ETS',          price: 50, color: '#60a5fa' },
+        { name: 'California CaT',  price: 38, color: '#818cf8' },
+        { name: 'New Zealand',     price: 33, color: '#a78bfa' },
+        { name: 'China ETS',       price: 13, color: '#e879f9' },
+        { name: 'South Korea',     price: 8,  color: '#c084fc' },
+    ];
 
-        new Chart(document.getElementById('carbonChart'), {
-            type: 'bar',
-            data: {
-                labels: etsData.map(d => d.name),
-                datasets: [{
-                    label: 'USD / tCO₂', data: etsData.map(d => d.price),
-                    backgroundColor: etsData.map(d => d.color + 'cc'),
-                    borderColor: etsData.map(d => d.color),
-                    borderWidth: 1.5, borderRadius: 6,
-                    hoverBackgroundColor: etsData.map(d => d.color)
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, indexAxis: 'y',
-                interaction: { intersect: false },
-                plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `$${ctx.parsed.x} / tCO₂` } } },
-                scales: {
-                    y: { grid: { display: false }, ticks: { font: { size: 12 } } },
-                    x: { grid: { color: gridColor }, ticks: { callback: v => '$' + v }, beginAtZero: true }
-                }
+    try {
+        // 2. Fetch live EU ETS price using Yahoo Finance (Ticker: KE=F) via a free CORS proxy
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const targetUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/KE=F');
+        
+        const response = await fetch(proxyUrl + targetUrl, { cache: "no-store" });
+        
+        if (response.ok) {
+            const data = await response.json();
+            // Extract the live market price from the Yahoo Finance JSON structure
+            const liveEuPrice = data.chart.result[0].meta.regularMarketPrice;
+            
+            if (liveEuPrice) {
+                // Update the EU ETS object with the live price
+                etsData.find(d => d.name === 'EU ETS').price = parseFloat(liveEuPrice.toFixed(2));
+                
+                // Update the dashboard UI to show it was successfully fetched live
+                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const updateLabel = document.getElementById('carbon-latest');
+                updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
+                updateLabel.classList.replace('text-slate-500', 'text-accent');
             }
-        });
+        }
+    } catch (error) {
+        console.warn("Could not fetch live carbon prices, using static fallback data.", error);
+    }
+
+    // 3. Render the chart
+    new Chart(document.getElementById('carbonChart'), {
+        type: 'bar',
+        data: {
+            labels: etsData.map(d => d.name),
+            datasets:[{
+                label: 'USD / tCO₂', 
+                data: etsData.map(d => d.price),
+                backgroundColor: etsData.map(d => d.color + 'cc'),
+                borderColor: etsData.map(d => d.color),
+                borderWidth: 1.5, 
+                borderRadius: 6,
+                hoverBackgroundColor: etsData.map(d => d.color)
+            }]
+        },
+        options: {
+            responsive: true, 
+            maintainAspectRatio: false, 
+            indexAxis: 'y',
+            interaction: { intersect: false },
+            plugins: { 
+                legend: { display: false }, 
+                tooltip: { ...tooltipStyle, callbacks: { label: ctx => `$${ctx.parsed.x} / tCO₂` } } 
+            },
+            scales: {
+                y: { grid: { display: false }, ticks: { font: { size: 12 } } },
+                x: { grid: { color: gridColor }, ticks: { callback: v => '$' + v }, beginAtZero: true }
+            }
+        }
+    });
+}
 
         // ══════════════════════════════════════════════
         // 5. NITROUS OXIDE (N₂O)
