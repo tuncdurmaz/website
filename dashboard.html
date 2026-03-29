@@ -401,8 +401,15 @@
 // ══════════════════════════════════════════════
 // 4. CARBON PRICES (Instant Load + Background Fetch)
 // ══════════════════════════════════════════════
-async function loadCarbonChart() {
-    let etsData = [
+        // ══════════════════════════════════════════════
+        // 4. CARBON PRICES (static — edit to update)
+        // ══════════════════════════════════════════════
+        // ── To update: change values below and the date in the HTML header ──
+        // ── Latest prices from ICAP, CarbonCredits.com, EMBER (March 2026) ──
+        
+ async function loadCarbonChart() {
+    // 1. Static fallback data
+    let etsData =[
         { name: 'EU ETS',          price: 70, color: '#38bdf8' },
         { name: 'UK ETS',          price: 50, color: '#60a5fa' },
         { name: 'California CaT',  price: 38, color: '#818cf8' },
@@ -412,51 +419,74 @@ async function loadCarbonChart() {
     ];
 
     try {
-        // Use a more reliable proxy + investing.com (they show the futures/spot price in EUR)
-        const proxy = 'https://corsproxy.io/?';
-        const url = encodeURIComponent('https://www.investing.com/commodities/carbon-emissions');
-
-        const res = await fetch(proxy + url, { 
-            cache: "no-store",
-            headers: { 'User-Agent': 'Mozilla/5.0' }   // helps avoid blocks
-        });
-
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-
-        const html = await res.text();
-
-        // Extract the main price (look for the large number near the commodity name)
-        // This regex looks for patterns like 70.63 or similar in the price area
-        const priceMatch = html.match(/data-value=["']?([\d.]+)["']?/i) || 
-                          html.match(/(\d{2,3}\.\d{1,2})\s*(?:EUR|€)/i);
-
-        if (priceMatch && priceMatch[1]) {
-            let euaEur = parseFloat(priceMatch[1]);
-
-            // Get current EUR/USD rate (still using Yahoo for this, or you can use another source)
-            const fxRes = await fetch(proxy + encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=EURUSD=X'));
-            const fxData = await fxRes.json();
-            const eurUsdRate = fxData?.quoteResponse?.result?.[0]?.regularMarketPrice || 1.08; // fallback rate
-
-            const liveUsd = (euaEur * eurUsdRate).toFixed(2);
-
-            const euItem = etsData.find(d => d.name === 'EU ETS');
-            if (euItem) euItem.price = parseFloat(liveUsd);
-
-            // UI feedback
-            const label = document.getElementById('carbon-latest');
-            if (label) {
-                label.innerHTML = `Live EU ETS (${euaEur} EUR) <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
-                label.classList.replace('text-slate-500', 'text-accent');
+        // 2. Fetch live Physical Carbon EUA ETC (CO2.MI) in Euros and the EUR/USD exchange rate
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const euaUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/CO2.MI');
+        const eurUsdUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/EURUSD=X');
+        
+        // Fetch both the carbon price and currency exchange rate at the same time
+        const[resEua, resFx] = await Promise.all([
+            fetch(proxyUrl + euaUrl, { cache: "no-store" }),
+            fetch(proxyUrl + eurUsdUrl, { cache: "no-store" })
+        ]);
+        
+        if (resEua.ok && resFx.ok) {
+            const dataEua = await resEua.json();
+            const dataFx = await resFx.json();
+            
+            // Extract the live market prices from the JSON structures
+            const euaEurPrice = dataEua.chart.result[0].meta.regularMarketPrice;
+            const eurUsdRate = dataFx.chart.result[0].meta.regularMarketPrice;
+            
+            if (euaEurPrice && eurUsdRate) {
+                // Convert the Euro price to USD
+                const liveEuPriceUsd = euaEurPrice * eurUsdRate;
+                
+                // Update the EU ETS object with the accurate live USD price
+                etsData.find(d => d.name === 'EU ETS').price = parseFloat(liveEuPriceUsd.toFixed(2));
+                
+                // Update the dashboard UI
+                const updateLabel = document.getElementById('carbon-latest');
+                if (updateLabel) {
+                    updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
+                    updateLabel.classList.replace('text-slate-500', 'text-accent');
+                }
             }
-            console.log(`✅ Updated EU ETS to $${liveUsd} USD (${euaEur} EUR)`);
         }
-    } catch (err) {
-        console.warn("Live fetch failed, using static data:", err);
+    } catch (error) {
+        console.warn("Could not fetch live carbon prices, using static fallback data.", error);
     }
 
-    // Render chart with possibly updated etsData (rest of your Chart.js code unchanged)
-    new Chart(document.getElementById('carbonChart'), { /* your existing options */ });
+    // 3. Render the chart
+    new Chart(document.getElementById('carbonChart'), {
+        type: 'bar',
+        data: {
+            labels: etsData.map(d => d.name),
+            datasets:[{
+                label: 'USD / tCO₂', 
+                data: etsData.map(d => d.price),
+                backgroundColor: etsData.map(d => d.color + 'cc'),
+                borderColor: etsData.map(d => d.color),
+                borderWidth: 1.5, 
+                borderRadius: 6,
+                hoverBackgroundColor: etsData.map(d => d.color)
+            }]
+        },
+        options: {
+            responsive: true, 
+            maintainAspectRatio: false, 
+            indexAxis: 'y',
+            interaction: { intersect: false },
+            plugins: { 
+                legend: { display: false }, 
+                tooltip: { backgroundColor: '#1e293b', borderColor: '#475569', borderWidth: 1, titleColor: '#f1f5f9', bodyColor: '#94a3b8', callbacks: { label: ctx => `$${ctx.parsed.x} / tCO₂` } } 
+            },
+            scales: {
+                y: { grid: { display: false }, ticks: { font: { size: 12 } } },
+                x: { grid: { color: 'rgba(51,65,85,0.4)' }, ticks: { callback: v => '$' + v }, beginAtZero: true }
+            }
+        }
+    });
 }
 
         // ══════════════════════════════════════════════
