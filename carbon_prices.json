@@ -1,0 +1,11 @@
+{
+  "last_updated": "March 29, 2026",
+  "prices":[
+    { "name": "EU ETS", "price": 70.00, "color": "#38bdf8" },
+    { "name": "UK ETS", "price": 50.00, "color": "#60a5fa" },
+    { "name": "California CaT", "price": 38.00, "color": "#818cf8" },
+    { "name": "New Zealand", "price": 33.00, "color": "#a78bfa" },
+    { "name": "China ETS", "price": 13.00, "color": "#e879f9" },
+    { "name": "South Korea", "price": 8.00, "color": "#c084fc" }
+  ]
+}
