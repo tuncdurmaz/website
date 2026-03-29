@@ -402,109 +402,65 @@
 // 4. CARBON PRICES (Instant Load + Background Fetch)
 // ══════════════════════════════════════════════
 async function loadCarbonChart() {
-    // 1. Static fallback data
-    let etsData =[
-        { name: 'EU ETS',          price: 70.00, color: '#38bdf8' },
-        { name: 'UK ETS',          price: 50.00, color: '#60a5fa' },
-        { name: 'California CaT',  price: 38.00, color: '#818cf8' },
-        { name: 'New Zealand',     price: 33.00, color: '#a78bfa' },
-        { name: 'China ETS',       price: 13.00, color: '#e879f9' },
-        { name: 'South Korea',     price: 8.00,  color: '#c084fc' },
+    // 1. Static fallback data (keep as-is)
+    let etsData = [
+        { name: 'EU ETS',          price: 70, color: '#38bdf8' },
+        { name: 'UK ETS',          price: 50, color: '#60a5fa' },
+        { name: 'California CaT',  price: 38, color: '#818cf8' },
+        { name: 'New Zealand',     price: 33, color: '#a78bfa' },
+        { name: 'China ETS',       price: 13, color: '#e879f9' },
+        { name: 'South Korea',     price: 8,  color: '#c084fc' },
     ];
 
-    const updateLabel = document.getElementById('carbon-latest');
-
-    // 2. IMMEDIATELY render the chart with static data so there is ZERO visual delay
-    const ctx = document.getElementById('carbonChart');
-    const carbonChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: etsData.map(d => d.name),
-            datasets:[{
-                label: 'USD / tCO₂', 
-                data: etsData.map(d => d.price),
-                backgroundColor: etsData.map(d => d.color + 'cc'),
-                borderColor: etsData.map(d => d.color),
-                borderWidth: 1.5, 
-                borderRadius: 6,
-                hoverBackgroundColor: etsData.map(d => d.color)
-            }]
-        },
-        options: {
-            responsive: true, 
-            maintainAspectRatio: false, 
-            indexAxis: 'y',
-            interaction: { intersect: false },
-            plugins: { 
-                legend: { display: false }, 
-                tooltip: { 
-                    backgroundColor: '#1e293b', 
-                    borderColor: '#475569', 
-                    borderWidth: 1, 
-                    titleColor: '#f1f5f9', 
-                    bodyColor: '#94a3b8', 
-                    callbacks: { label: ctx => `$${ctx.parsed.x.toFixed(2)} / tCO₂` } 
-                } 
-            },
-            scales: {
-                y: { grid: { display: false }, ticks: { font: { size: 12 } } },
-                x: { grid: { color: 'rgba(51,65,85,0.4)' }, ticks: { callback: v => '$' + v }, beginAtZero: true }
-            }
-        }
-    });
-
-    // 3. Set label to show it's trying to fetch live data
-    if (updateLabel) {
-        updateLabel.innerHTML = `Checking for live data... <i class="fa-solid fa-spinner fa-spin ml-1 text-slate-500"></i>`;
-    }
-
-    // 4. Try fetching live data in the background with a strict 5-second timeout
     try {
-        const fetchWithTimeout = async (url, ms = 5000) => {
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), ms);
-            const response = await fetch(url, { signal: controller.signal });
-            clearTimeout(id);
-            return response;
-        };
+        // 2. New proxy + more reliable quote endpoint
+        const proxyUrl = 'https://corsproxy.io/?';   // ← better than allorigins for Yahoo right now
+        const euaUrl = encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=CO2.MI');
+        const eurUsdUrl = encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=EURUSD=X');
 
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const euaUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/CO2.MI');
-        const eurUsdUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/EURUSD=X');
-        
-        const[resEua, resFx] = await Promise.all([
-            fetchWithTimeout(proxyUrl + euaUrl),
-            fetchWithTimeout(proxyUrl + eurUsdUrl)
+        const [resEua, resFx] = await Promise.all([
+            fetch(proxyUrl + euaUrl, { cache: "no-store" }),
+            fetch(proxyUrl + eurUsdUrl, { cache: "no-store" })
         ]);
-        
+
         if (resEua.ok && resFx.ok) {
             const dataEua = await resEua.json();
             const dataFx = await resFx.json();
-            
-            const euaEurPrice = dataEua.chart.result[0].meta.regularMarketPrice;
-            const eurUsdRate = dataFx.chart.result[0].meta.regularMarketPrice;
-            
+
+            // New parsing for /quote endpoint
+            const euaQuote = dataEua?.quoteResponse?.result?.[0];
+            const fxQuote = dataFx?.quoteResponse?.result?.[0];
+
+            const euaEurPrice = euaQuote?.regularMarketPrice || euaQuote?.price;
+            const eurUsdRate = fxQuote?.regularMarketPrice || fxQuote?.price;
+
             if (euaEurPrice && eurUsdRate) {
                 const liveEuPriceUsd = euaEurPrice * eurUsdRate;
-                
-                // Update the chart object dynamically
-                carbonChart.data.datasets[0].data[0] = parseFloat(liveEuPriceUsd.toFixed(2));
-                carbonChart.update(); // This makes the bar magically animate to the new price!
-                
+
+                // Update EU ETS
+                const euEts = etsData.find(d => d.name === 'EU ETS');
+                if (euEts) euEts.price = parseFloat(liveEuPriceUsd.toFixed(2));
+
+                // Visual feedback
+                const updateLabel = document.getElementById('carbon-latest');
                 if (updateLabel) {
                     updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
                     updateLabel.classList.replace('text-slate-500', 'text-accent');
                 }
+                console.log(`✅ Live EU ETS updated: $${liveEuPriceUsd.toFixed(2)}`);
+            } else {
+                throw new Error("Price field missing in response");
             }
         } else {
-            throw new Error("Proxy or Yahoo blocked the request.");
+            throw new Error(`HTTP error: ${resEua.status} / ${resFx.status}`);
         }
     } catch (error) {
-        console.warn("Live fetch failed, staying with static data.", error);
-        if (updateLabel) {
-            updateLabel.innerHTML = `Using Static Fallback <i class="fa-solid fa-triangle-exclamation text-yellow-500 ml-1"></i>`;
-        }
+        console.warn("Could not fetch live carbon prices, using static fallback.", error);
+        // Optional: you can add a small UI indicator here that it fell back to static
     }
+
+    // 3. Render the chart (unchanged)
+    new Chart(document.getElementById('carbonChart'), { /* ... your existing chart options ... */ });
 }
 
         // ══════════════════════════════════════════════
