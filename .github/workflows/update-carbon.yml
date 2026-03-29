@@ -1,0 +1,31 @@
+name: Update Carbon Prices Daily
+
+on:
+  schedule:
+    - cron: '0 4 * * 1-5' # Runs at 4:00 AM UTC, Monday through Friday
+  workflow_dispatch: # Allows you to click a button to run it manually
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run scraping script
+        run: python update_prices.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add carbon_prices.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update carbon prices" && git push)
