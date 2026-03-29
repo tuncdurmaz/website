@@ -47,15 +47,13 @@ def update_carbon_data():
                 item['price'] = live_eu_usd
                 break
                 
-        # Update timestamp (e.g., "March 29, 2026")
-        data['last_updated'] = datetime.now().strftime('%B %d, %Y')
+        # Update timestamp to include hours and save the Exchange Rate!
+        data['last_updated'] = datetime.now().strftime('%b %d, %Y (%H:%M UTC)')
+        data['exchange_rate'] = f"1 EUR = {eur_usd_rate:.4f} USD"
         
         # 4. Save the updated data back to the file
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
-        print("carbon_prices.json updated successfully.")
-    else:
-        print("Could not retrieve live data. JSON file left unchanged.")
 
 if __name__ == "__main__":
     update_carbon_data()
