@@ -453,11 +453,17 @@ Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank
                     carbonChart.data.datasets[0].data = data.prices.map(d => d.price);
                     carbonChart.update();
                     
-                    // Update UI Label with precise date from GitHub Action
+                    // Update UI Labels
                     const updateLabel = document.getElementById('carbon-latest');
                     if (updateLabel) {
                         updateLabel.innerHTML = `Live Update: ${data.last_updated} <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
                         updateLabel.classList.replace('text-slate-500', 'text-accent');
+                    }
+                    
+                    // NEW: Inject the exchange rate footnote below the chart
+                    const exchangeFootnote = document.getElementById('exchange-rate-footnote');
+                    if (exchangeFootnote && data.exchange_rate) {
+                        exchangeFootnote.innerHTML = `Live Conversion: ${data.exchange_rate}`;
                     }
                 }
             } catch (error) {
