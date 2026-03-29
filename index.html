@@ -9,7 +9,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -68,7 +67,7 @@
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
                         <a href="#about" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
-                        <a href="#dashboard" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="dashboard.html" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                         <a href="#projects" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
                         <a href="#cv" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
                         <a href="#teaching" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
@@ -80,7 +79,7 @@
             <!-- Mobile menu -->
             <div id="mobile-menu" class="md:hidden pb-4 space-y-2">
                 <a href="#about" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
-                <a href="#dashboard" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                <a href="dashboard.html" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                 <a href="#projects" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
                 <a href="#cv" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
                 <a href="#teaching" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
@@ -165,35 +164,26 @@
 
     <section id="dashboard" class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold mb-3 border-l-4 border-accent pl-4">Climate Dashboard</h2>
-        <p class="text-textMuted mb-10 pl-5">Live data on the economics of climate change — the core of my research.</p>
+        <p class="text-textMuted mb-6 pl-5">Live data on the economics of climate change — the core of my research.</p>
 
-        <div class="grid lg:grid-cols-2 gap-8">
-
-            <!-- CO2 Chart — Live from global-warming.org API -->
-            <div class="p-6 rounded-xl bg-bgCard border border-slate-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-white">Atmospheric CO₂ Concentration</h3>
-                    <span id="co2-latest" class="text-xs text-accent font-mono"></span>
+        <a href="dashboard.html" class="block p-8 rounded-xl bg-bgCard border border-slate-700 hover:border-accent transition-all group">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-500/20 to-sky-500/20 border border-slate-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-chart-line text-2xl text-accent"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1 group-hover:text-accent transition-colors">Explore the Full Dashboard</h3>
+                        <p class="text-textMuted text-sm">Live CO₂ & methane concentrations · Global temperature anomaly · Carbon prices in major ETSs · Renewable energy trends</p>
+                    </div>
                 </div>
-                <div class="relative" style="height: 320px;">
-                    <canvas id="co2Chart"></canvas>
+                <div class="flex-shrink-0">
+                    <span class="inline-flex items-center gap-2 bg-accent/10 text-accent px-5 py-2.5 rounded-lg font-bold text-sm group-hover:bg-accent group-hover:text-bgDark transition-all">
+                        Open Dashboard <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </span>
                 </div>
-                <p class="text-xs text-slate-600 mt-3">Source: NOAA/GML via <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API. Monthly readings, Mauna Loa.</p>
             </div>
-
-            <!-- Carbon Prices — Chart.js bar chart -->
-            <div class="p-6 rounded-xl bg-bgCard border border-slate-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-white">Carbon Prices in Major ETSs</h3>
-                    <span class="text-xs text-slate-500">USD / tCO₂ · Updated Mar 2026</span>
-                </div>
-                <div class="relative" style="height: 320px;">
-                    <canvas id="carbonChart"></canvas>
-                </div>
-                <p class="text-xs text-slate-600 mt-3">Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank" class="text-slate-500 hover:text-accent">CarbonCredits.com</a>, <a href="https://icapcarbonaction.com/en/ets-prices" target="_blank" class="text-slate-500 hover:text-accent">ICAP</a>, <a href="https://ember-energy.org" target="_blank" class="text-slate-500 hover:text-accent">EMBER</a>.</p>
-            </div>
-
-        </div>
+        </a>
     </section>
 
     <section id="projects" class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -412,7 +402,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Empirical Insights into Economic Viability: Integrating Bitcoin Mining with Biorefineries Using a Stochastic Model</h4>
-                            <p class="text-textMuted text-sm mt-1">With G. Semaan, G. Wang & G. Kumar. <em>Systems</em>, Vol. 13 (2025).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With G. Semaan, G. Wang & G. Kumar. <em>Systems</em>, Vol. 13 (2025).</p>
+                            <a href="https://doi.org/10.3390/systems13050359" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2025</span>
                     </div>
@@ -422,7 +415,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Comprehensive technical and economic evaluations of using second-life batteries</h4>
-                            <p class="text-textMuted text-sm mt-1">With F. Turan & A.R. Boynuegri. <em>Journal of Energy Storage</em>, Vol 120 (2025).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With F. Turan & A.R. Boynuegri. <em>Journal of Energy Storage</em>, Vol. 120 (2025).</p>
+                            <a href="https://doi.org/10.1016/j.est.2025.116379" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2025</span>
                     </div>
@@ -432,7 +428,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Generation failures, strategic withholding, and capacity payments in the Turkish electricity market</h4>
-                            <p class="text-textMuted text-sm mt-1"><em>Energy Policy</em>, Vol. 184 (2024).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With S. Acar & S. Kızılkaya. <em>Energy Policy</em>, Vol. 184 (2024).</p>
+                            <a href="https://doi.org/10.1016/j.enpol.2023.113897" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2024</span>
                     </div>
@@ -442,7 +441,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">AI Revolution and Coordination Failure: Theory and Evidence</h4>
-                            <p class="text-textMuted text-sm mt-1">With B. Ünveren & S. Sunal. <em>Journal of Macroeconomics</em>, Vol. 78 (2023).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With B. Ünveren & S. Sunal. <em>Journal of Macroeconomics</em>, Vol. 78 (2023).</p>
+                            <a href="https://doi.org/10.1016/j.jmacro.2023.103561" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2023</span>
                     </div>
@@ -452,7 +454,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Feed-in tariff policy in Hong Kong: Is it efficient?</h4>
-                            <p class="text-textMuted text-sm mt-1">With A. Pommeret & P. Dato. <em>City and Environment Interactions</em>, Vol. 10 (2021).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With P. Dato & A. Pommeret. <em>City and Environment Interactions</em>, Vol. 10 (2021). Open Access.</p>
+                            <a href="https://doi.org/10.1016/j.cacint.2021.100056" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2021</span>
                     </div>
@@ -463,10 +468,14 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Evaluating Carbon Capture and Storage in a Climate Model with Endogenous Technical Change</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With F. Schroyen. <em>Climate Change Economics</em>, Vol. 11 (2020).</p>
-                            
-                            <a href="durmaz_schroyen_2020.pdf" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-file-pdf mr-2"></i> Download PDF
-                            </a>
+                            <div class="flex flex-wrap gap-2">
+                                <a href="https://doi.org/10.1142/S2010007820500037" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                                </a>
+                                <a href="durmaz_schroyen_2020.pdf" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                    <i class="fa-solid fa-file-pdf mr-2"></i> PDF
+                                </a>
+                            </div>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
                     </div>
@@ -476,7 +485,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Smart Grids and Renewable Electricity Generation by Households</h4>
-                            <p class="text-textMuted text-sm mt-1">With A. Pommeret & P. Dato. <em>Energy Economics</em>, Vol. 86 (2020).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With P. Dato & A. Pommeret. <em>Energy Economics</em>, Vol. 86 (2020).</p>
+                            <a href="https://doi.org/10.1016/j.eneco.2019.104562" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
                     </div>
@@ -486,7 +498,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Estimation of Residential Electricity Demand in Hong Kong under Electricity Charge Subsidies</h4>
-                            <p class="text-textMuted text-sm mt-1">With A. Pommeret & H. Tastan. <em>Energy Economics</em>, Vol. 88 (2020).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With A. Pommeret & H. Tastan. <em>Energy Economics</em>, Vol. 88 (2020).</p>
+                            <a href="https://doi.org/10.1016/j.eneco.2020.104742" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
                     </div>
@@ -496,9 +511,25 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">Levelized Cost of Consumed Electricity</h4>
-                            <p class="text-textMuted text-sm mt-1">With A. Pommeret. <em>Economics of Energy & Environmental Policy</em>, Vol. 9, No. 1 (2020).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With A. Pommeret. <em>Economics of Energy & Environmental Policy</em>, Vol. 9, No. 1 (2020).</p>
+                            <a href="https://doi.org/10.5547/2160-5890.9.1.tdur" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
+                    </div>
+                </div>
+
+                <div class="pub-card energy p-5 rounded-lg bg-bgCard border border-slate-800 hover:border-slate-600 transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Intermittent renewable electricity generation with smart grids</h4>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With P. Dato & A. Pommeret. In <em>Climate and Energy Protection in the EU and China</em>, Springer (2019).</p>
+                            <a href="https://doi.org/10.1007/978-3-030-12004-7_7" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2019</span>
                     </div>
                 </div>
 
@@ -506,7 +537,10 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">A two-sector model of economic growth with endogenous technical change and pollution abatement</h4>
-                            <p class="text-textMuted text-sm mt-1">With J.-P. Amigues. <em>Environmental Modeling & Assessment</em>, Vol. 24(6), pp. 703–725 (2019).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3">With J.-P. Amigues. <em>Environmental Modeling & Assessment</em>, Vol. 24(6), pp. 703–725 (2019).</p>
+                            <a href="https://doi.org/10.1007/s10666-019-09660-2" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2019</span>
                     </div>
@@ -516,9 +550,25 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="text-lg font-semibold text-white">The Economics of CCS: Why have CCS technologies not had an international breakthrough?</h4>
-                            <p class="text-textMuted text-sm mt-1"><em>Renewable & Sustainable Energy Reviews</em>, Vol. 95, pp. 328–340 (2018).</p>
+                            <p class="text-textMuted text-sm mt-1 mb-3"><em>Renewable & Sustainable Energy Reviews</em>, Vol. 95, pp. 328–340 (2018).</p>
+                            <a href="https://doi.org/10.1016/j.rser.2018.07.007" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2018</span>
+                    </div>
+                </div>
+
+                <div class="pub-card energy p-5 rounded-lg bg-bgCard border border-slate-800 hover:border-slate-600 transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="text-lg font-semibold text-white">Optimal storage under uncertainty: investigating the implications of frugality and prudence</h4>
+                            <p class="text-textMuted text-sm mt-1 mb-3"><em>Economics Bulletin</em>, Vol. 37(3), pp. 1624–1629 (2017).</p>
+                            <a href="http://www.accessecon.com/Pubs/EB/2017/Volume37/EB-17-V37-I3-P144.pdf" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Read Paper
+                            </a>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2017</span>
                     </div>
                 </div>
 
@@ -592,161 +642,6 @@
                 }
             });
         }
-
-        // ── Climate Dashboard — Live CO₂ Chart ──
-        const chartDefaults = {
-            color: '#94a3b8',
-            borderColor: '#334155',
-            font: { family: 'Inter, sans-serif' }
-        };
-        Chart.defaults.color = chartDefaults.color;
-        Chart.defaults.font.family = chartDefaults.font.family;
-
-        async function loadCO2Chart() {
-            const canvas = document.getElementById('co2Chart');
-            if (!canvas) return;
-
-            // Fallback static data in case API fails
-            let labels = [1960,1970,1980,1990,2000,2010,2020,2025];
-            let values = [316.9,325.7,338.8,354.4,369.7,389.9,414.2,427.0];
-
-            try {
-                const res = await fetch('https://global-warming.org/api/co2-api');
-                const data = await res.json();
-                if (data && data.co2) {
-                    // Group by year, compute annual averages
-                    const yearly = {};
-                    data.co2.forEach(d => {
-                        const yr = parseInt(d.year);
-                        if (!yr || yr < 1960) return;
-                        if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
-                        yearly[yr].sum += parseFloat(d.cycle);
-                        yearly[yr].count++;
-                    });
-                    const years = Object.keys(yearly).map(Number).sort((a, b) => a - b);
-                    // Sample every 2 years for readability, always include the latest
-                    labels = years.filter((y, i) => y % 2 === 0 || y === years[years.length - 1]);
-                    values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(1));
-
-                    // Show latest reading
-                    const latestEntry = data.co2[data.co2.length - 1];
-                    if (latestEntry) {
-                        document.getElementById('co2-latest').textContent = 
-                            `Latest: ${parseFloat(latestEntry.cycle).toFixed(1)} ppm (${latestEntry.year}.${latestEntry.month})`;
-                    }
-                }
-            } catch (e) {
-                console.log('CO₂ API unavailable, using fallback data');
-                document.getElementById('co2-latest').textContent = 'Mauna Loa Observatory';
-            }
-
-            new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'CO₂ (ppm)',
-                        data: values,
-                        borderColor: '#f97316',
-                        backgroundColor: 'rgba(249,115,22,0.08)',
-                        borderWidth: 2.5,
-                        pointRadius: 2,
-                        pointBackgroundColor: '#f97316',
-                        pointHoverRadius: 6,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { intersect: false, mode: 'index' },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1e293b',
-                            borderColor: '#475569',
-                            borderWidth: 1,
-                            titleColor: '#f1f5f9',
-                            bodyColor: '#94a3b8',
-                            callbacks: {
-                                label: ctx => `${ctx.parsed.y} ppm`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { color: 'rgba(51,65,85,0.4)' },
-                            ticks: { maxTicksLimit: 10, font: { size: 10 } }
-                        },
-                        y: {
-                            grid: { color: 'rgba(51,65,85,0.4)' },
-                            ticks: { callback: v => v + ' ppm' }
-                        }
-                    }
-                }
-            });
-        }
-
-        loadCO2Chart();
-
-        // ── Carbon Prices in Major ETSs ──
-        // To update: change the values below and the date in the HTML header
-        // Latest prices from ICAP, CarbonCredits.com, and EMBER (March 2026)
-        const etsData = [
-            { name: 'EU ETS',         price: 70, color: '#38bdf8' },
-            { name: 'UK ETS',         price: 50, color: '#60a5fa' },
-            { name: 'California\nCaT', price: 38, color: '#818cf8' },
-            { name: 'New Zealand',    price: 33, color: '#a78bfa' },
-            { name: 'South Korea',    price: 8,  color: '#c084fc' },
-            { name: 'China ETS',      price: 13, color: '#e879f9' },
-        ];
-
-        new Chart(document.getElementById('carbonChart'), {
-            type: 'bar',
-            data: {
-                labels: etsData.map(d => d.name),
-                datasets: [{
-                    label: 'USD / tCO₂',
-                    data: etsData.map(d => d.price),
-                    backgroundColor: etsData.map(d => d.color + 'cc'),
-                    borderColor: etsData.map(d => d.color),
-                    borderWidth: 1.5,
-                    borderRadius: 6,
-                    hoverBackgroundColor: etsData.map(d => d.color)
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                interaction: { intersect: false },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        borderColor: '#475569',
-                        borderWidth: 1,
-                        titleColor: '#f1f5f9',
-                        bodyColor: '#94a3b8',
-                        callbacks: {
-                            label: ctx => `$${ctx.parsed.x} / tCO₂`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        grid: { display: false },
-                        ticks: { font: { size: 12 } }
-                    },
-                    x: {
-                        grid: { color: 'rgba(51,65,85,0.4)' },
-                        ticks: { callback: v => '$' + v },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
 
         // ── Scroll reveal ──
         const observer = new IntersectionObserver((entries) => {

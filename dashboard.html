@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Dashboard | Tunç Durmaz</title>
+    <meta name="description" content="Live climate data dashboard — CO₂, methane, temperature anomaly, carbon prices, and renewable energy trends.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#0f172a',
+                        bgCard: '#1e293b',
+                        accent: '#38bdf8',
+                        textMain: '#f1f5f9',
+                        textMuted: '#94a3b8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        #mobile-menu { display: none; }
+        #mobile-menu.open { display: block; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .chart-card { transition: border-color 0.3s ease; }
+        .chart-card:hover { border-color: #475569; }
+        .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    </style>
+</head>
+<body class="bg-bgDark text-textMain font-sans antialiased selection:bg-accent selection:text-bgDark">
+
+    <!-- ── Nav (shared with main site) ── -->
+    <nav class="fixed w-full z-50 bg-bgDark/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="text-xl font-bold tracking-tight text-white">Tunç <span class="text-accent">Durmaz</span></a>
+                
+                <button onclick="document.getElementById('mobile-menu').classList.toggle('open')" class="md:hidden text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html#about" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="dashboard.html" class="text-accent px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="index.html#projects" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                        <a href="index.html#cv" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
+                        <a href="index.html#teaching" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
+                        <a href="index.html#publications" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Publications</a>
+                        <a href="index.html#contact" class="border border-accent text-accent hover:bg-accent hover:text-bgDark transition-all px-4 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden pb-4 space-y-2">
+                <a href="index.html#about" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                <a href="dashboard.html" class="block text-accent px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                <a href="index.html#projects" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                <a href="index.html#cv" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
+                <a href="index.html#teaching" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
+                <a href="index.html#publications" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Publications</a>
+                <a href="index.html#contact" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Hero Header ── -->
+    <section class="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div class="flex items-center gap-3 mb-2">
+            <a href="index.html" class="text-textMuted hover:text-accent text-sm transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Home</a>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+            Climate <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-600">Dashboard</span>
+        </h1>
+        <p class="text-lg text-textMuted max-w-3xl leading-relaxed">
+            Live data on the economics of climate change — the core of my research. 
+            Charts pull from public APIs and are updated automatically.
+        </p>
+        <div class="flex items-center gap-2 mt-4">
+            <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span>
+            <span class="text-xs text-slate-500">Data refreshed on each page load</span>
+        </div>
+    </section>
+
+    <!-- ── Dashboard Grid ── -->
+    <section class="pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-8">
+
+            <!-- 1. CO₂ Concentration -->
+            <div class="chart-card p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Atmospheric CO₂ Concentration</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Annual averages, Mauna Loa Observatory</p>
+                    </div>
+                    <span id="co2-latest" class="text-xs text-accent font-mono"></span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="co2Chart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Source: NOAA/GML via <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API</p>
+            </div>
+
+            <!-- 2. Global Temperature Anomaly -->
+            <div class="chart-card p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Global Temperature Anomaly</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Deviation from 1951–1980 average (°C)</p>
+                    </div>
+                    <span id="temp-latest" class="text-xs text-red-400 font-mono"></span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="tempChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Source: NASA GISS via <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API</p>
+            </div>
+
+            <!-- 3. Methane Concentration -->
+            <div class="chart-card p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Atmospheric Methane (CH₄)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Monthly global average (ppb)</p>
+                    </div>
+                    <span id="ch4-latest" class="text-xs text-yellow-400 font-mono"></span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="ch4Chart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Source: NOAA via <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API</p>
+            </div>
+
+            <!-- 4. Carbon Prices -->
+            <div class="chart-card p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Carbon Prices in Major ETSs</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">USD per tonne CO₂ equivalent</p>
+                    </div>
+                    <span class="text-xs text-slate-500">Updated Mar 2026</span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="carbonChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank" class="text-slate-500 hover:text-accent">CarbonCredits.com</a>, <a href="https://icapcarbonaction.com/en/ets-prices" target="_blank" class="text-slate-500 hover:text-accent">ICAP</a>, <a href="https://ember-energy.org" target="_blank" class="text-slate-500 hover:text-accent">EMBER</a></p>
+            </div>
+
+            <!-- 5. Nitrous Oxide -->
+            <div class="chart-card p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Nitrous Oxide (N₂O)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Monthly global average (ppb)</p>
+                    </div>
+                    <span id="n2o-latest" class="text-xs text-emerald-400 font-mono"></span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="n2oChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Source: NOAA via <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API</p>
+            </div>
+
+            <!-- 6. Arctic Sea Ice -->
+            <div class="chart-card p-6 rounded-xl bg-bgCard border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Arctic Sea Ice Extent</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Million km² (annual)</p>
+                    </div>
+                    <span id="ice-latest" class="text-xs text-cyan-400 font-mono"></span>
+                </div>
+                <div class="relative" style="height: 320px;">
+                    <canvas id="iceChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-600 mt-3">Source: <a href="https://global-warming.org" target="_blank" class="text-slate-500 hover:text-accent">global-warming.org</a> API</p>
+            </div>
+
+        </div>
+
+        <!-- Data note -->
+        <div class="mt-12 p-5 rounded-xl bg-slate-800/40 border border-slate-700/50">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-circle-info text-accent mt-0.5"></i>
+                <div>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        <strong class="text-white">About this dashboard:</strong> All charts except carbon prices fetch live data from the <a href="https://global-warming.org" target="_blank" class="text-accent hover:underline">global-warming.org</a> public API. Carbon prices are manually updated from ICAP, CarbonCredits.com, and EMBER reports — to update them, edit the <code class="text-xs bg-slate-900 px-1.5 py-0.5 rounded">etsData</code> array in the source code.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="bg-bgCard pt-10 pb-8 border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-slate-600 text-sm">
+                &copy; 2026 Tunç Durmaz. Yıldız Technical University, Department of Economics. <br>
+                Istanbul, Türkiye.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ── Chart.js Defaults ──
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Inter, sans-serif';
+
+        const tooltipStyle = {
+            backgroundColor: '#1e293b',
+            borderColor: '#475569',
+            borderWidth: 1,
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8'
+        };
+        const gridColor = 'rgba(51,65,85,0.4)';
+
+        // ── Helper: fetch with timeout + fallback ──
+        async function safeFetch(url, timeoutMs = 8000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(id);
+                return await res.json();
+            } catch (e) {
+                clearTimeout(id);
+                return null;
+            }
+        }
+
+        // ══════════════════════════════════════════════
+        // 1. CO₂ CONCENTRATION
+        // ══════════════════════════════════════════════
+        async function loadCO2Chart() {
+            let labels = [1960,1970,1980,1990,2000,2010,2020,2025];
+            let values = [316.9,325.7,338.8,354.4,369.7,389.9,414.2,427.0];
+
+            const data = await safeFetch('https://global-warming.org/api/co2-api');
+            if (data && data.co2) {
+                const yearly = {};
+                data.co2.forEach(d => {
+                    const yr = parseInt(d.year);
+                    if (!yr || yr < 1960) return;
+                    if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
+                    yearly[yr].sum += parseFloat(d.cycle);
+                    yearly[yr].count++;
+                });
+                const years = Object.keys(yearly).map(Number).sort((a, b) => a - b);
+                labels = years.filter(y => y % 2 === 0 || y === years[years.length - 1]);
+                values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(1));
+
+                const latest = data.co2[data.co2.length - 1];
+                if (latest) {
+                    document.getElementById('co2-latest').textContent =
+                        `Latest: ${parseFloat(latest.cycle).toFixed(1)} ppm (${latest.year}.${latest.month})`;
+                }
+            }
+
+            new Chart(document.getElementById('co2Chart'), {
+                type: 'line',
+                data: {
+                    labels, datasets: [{
+                        label: 'CO₂ (ppm)', data: values,
+                        borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)',
+                        borderWidth: 2.5, pointRadius: 1.5, pointBackgroundColor: '#f97316',
+                        pointHoverRadius: 6, fill: true, tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y} ppm` } } },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+                        y: { grid: { color: gridColor }, ticks: { callback: v => v + ' ppm' } }
+                    }
+                }
+            });
+        }
+
+        // ══════════════════════════════════════════════
+        // 2. GLOBAL TEMPERATURE ANOMALY
+        // ══════════════════════════════════════════════
+        async function loadTempChart() {
+            let labels = ['1880','1900','1920','1940','1960','1980','2000','2020'];
+            let values = [-0.16,-0.08,-0.27,0.12,0.03,0.26,0.39,1.02];
+
+            const data = await safeFetch('https://global-warming.org/api/temperature-api');
+            if (data && data.result) {
+                const yearly = {};
+                data.result.forEach(d => {
+                    const yr = d.time ? d.time.split('.')[0] : null;
+                    if (!yr || parseInt(yr) < 1880) return;
+                    if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
+                    yearly[yr].sum += parseFloat(d.station || d.land || 0);
+                    yearly[yr].count++;
+                });
+                const years = Object.keys(yearly).sort();
+                labels = years.filter(y => parseInt(y) % 5 === 0 || y === years[years.length - 1]);
+                values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(3));
+
+                const lastYear = years[years.length - 1];
+                const lastVal = (yearly[lastYear].sum / yearly[lastYear].count).toFixed(2);
+                document.getElementById('temp-latest').textContent = `${lastYear}: +${lastVal}°C`;
+            }
+
+            new Chart(document.getElementById('tempChart'), {
+                type: 'bar',
+                data: {
+                    labels, datasets: [{
+                        label: '°C Anomaly', data: values,
+                        backgroundColor: values.map(v => v >= 0 ? 'rgba(239,68,68,0.7)' : 'rgba(56,189,248,0.7)'),
+                        borderColor: values.map(v => v >= 0 ? '#ef4444' : '#38bdf8'),
+                        borderWidth: 1, borderRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y > 0 ? '+' : ''}${ctx.parsed.y}°C` } } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 12 } },
+                        y: { grid: { color: gridColor }, ticks: { callback: v => (v > 0 ? '+' : '') + v + '°C' } }
+                    }
+                }
+            });
+        }
+
+        // ══════════════════════════════════════════════
+        // 3. METHANE (CH₄)
+        // ══════════════════════════════════════════════
+        async function loadCH4Chart() {
+            let labels = ['1984','1990','1995','2000','2005','2010','2015','2020','2024'];
+            let values = [1644,1714,1773,1773,1774,1799,1834,1879,1930];
+
+            const data = await safeFetch('https://global-warming.org/api/methane-api');
+            if (data && data.methane) {
+                const yearly = {};
+                data.methane.forEach(d => {
+                    const yr = d.date ? d.date.split('.')[0] : null;
+                    if (!yr) return;
+                    if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
+                    yearly[yr].sum += parseFloat(d.average);
+                    yearly[yr].count++;
+                });
+                const years = Object.keys(yearly).sort();
+                labels = years.filter(y => parseInt(y) % 2 === 0 || y === years[years.length - 1]);
+                values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(1));
+
+                const lastYear = years[years.length - 1];
+                const lastVal = (yearly[lastYear].sum / yearly[lastYear].count).toFixed(1);
+                document.getElementById('ch4-latest').textContent = `Latest: ${lastVal} ppb (${lastYear})`;
+            }
+
+            new Chart(document.getElementById('ch4Chart'), {
+                type: 'line',
+                data: {
+                    labels, datasets: [{
+                        label: 'CH₄ (ppb)', data: values,
+                        borderColor: '#eab308', backgroundColor: 'rgba(234,179,8,0.08)',
+                        borderWidth: 2.5, pointRadius: 1.5, pointBackgroundColor: '#eab308',
+                        pointHoverRadius: 6, fill: true, tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y} ppb` } } },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+                        y: { grid: { color: gridColor }, ticks: { callback: v => v + ' ppb' } }
+                    }
+                }
+            });
+        }
+
+        // ══════════════════════════════════════════════
+        // 4. CARBON PRICES (static — edit to update)
+        // ══════════════════════════════════════════════
+        // ── To update: change values below and the date in the HTML header ──
+        // ── Latest prices from ICAP, CarbonCredits.com, EMBER (March 2026) ──
+        const etsData = [
+            { name: 'EU ETS',          price: 70, color: '#38bdf8' },
+            { name: 'UK ETS',          price: 50, color: '#60a5fa' },
+            { name: 'California CaT',  price: 38, color: '#818cf8' },
+            { name: 'New Zealand',     price: 33, color: '#a78bfa' },
+            { name: 'China ETS',       price: 13, color: '#e879f9' },
+            { name: 'South Korea',     price: 8,  color: '#c084fc' },
+        ];
+
+        new Chart(document.getElementById('carbonChart'), {
+            type: 'bar',
+            data: {
+                labels: etsData.map(d => d.name),
+                datasets: [{
+                    label: 'USD / tCO₂', data: etsData.map(d => d.price),
+                    backgroundColor: etsData.map(d => d.color + 'cc'),
+                    borderColor: etsData.map(d => d.color),
+                    borderWidth: 1.5, borderRadius: 6,
+                    hoverBackgroundColor: etsData.map(d => d.color)
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                interaction: { intersect: false },
+                plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `$${ctx.parsed.x} / tCO₂` } } },
+                scales: {
+                    y: { grid: { display: false }, ticks: { font: { size: 12 } } },
+                    x: { grid: { color: gridColor }, ticks: { callback: v => '$' + v }, beginAtZero: true }
+                }
+            }
+        });
+
+        // ══════════════════════════════════════════════
+        // 5. NITROUS OXIDE (N₂O)
+        // ══════════════════════════════════════════════
+        async function loadN2OChart() {
+            let labels = ['2001','2005','2010','2015','2020','2024'];
+            let values = [316.3,319.2,323.2,328.2,333.0,337.0];
+
+            const data = await safeFetch('https://global-warming.org/api/nitrous-oxide-api');
+            if (data && data.nitpiousoxide) {
+                const yearly = {};
+                data.nitpiousoxide.forEach(d => {
+                    const yr = d.date ? d.date.split('.')[0] : null;
+                    if (!yr) return;
+                    if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
+                    yearly[yr].sum += parseFloat(d.average);
+                    yearly[yr].count++;
+                });
+                const years = Object.keys(yearly).sort();
+                labels = years.filter(y => parseInt(y) % 2 === 0 || y === years[years.length - 1]);
+                values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(2));
+
+                const lastYear = years[years.length - 1];
+                const lastVal = (yearly[lastYear].sum / yearly[lastYear].count).toFixed(1);
+                document.getElementById('n2o-latest').textContent = `Latest: ${lastVal} ppb (${lastYear})`;
+            }
+
+            new Chart(document.getElementById('n2oChart'), {
+                type: 'line',
+                data: {
+                    labels, datasets: [{
+                        label: 'N₂O (ppb)', data: values,
+                        borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)',
+                        borderWidth: 2.5, pointRadius: 1.5, pointBackgroundColor: '#10b981',
+                        pointHoverRadius: 6, fill: true, tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y} ppb` } } },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+                        y: { grid: { color: gridColor }, ticks: { callback: v => v + ' ppb' } }
+                    }
+                }
+            });
+        }
+
+        // ══════════════════════════════════════════════
+        // 6. ARCTIC SEA ICE
+        // ══════════════════════════════════════════════
+        async function loadIceChart() {
+            let labels = ['1979','1985','1990','1995','2000','2005','2010','2015','2020','2024'];
+            let values = [12.0,11.5,11.2,10.8,10.4,10.0,9.4,8.9,8.2,7.8];
+
+            const data = await safeFetch('https://global-warming.org/api/arctic-api');
+            if (data && data.arcpiclice) {
+                const yearly = {};
+                data.arcpiclice.forEach(d => {
+                    const yr = d.year ? d.year.toString() : null;
+                    if (!yr) return;
+                    if (!yearly[yr]) yearly[yr] = { sum: 0, count: 0 };
+                    yearly[yr].sum += parseFloat(d.extent);
+                    yearly[yr].count++;
+                });
+                const years = Object.keys(yearly).sort();
+                labels = years.filter(y => parseInt(y) % 3 === 0 || y === years[years.length - 1]);
+                values = labels.map(y => +(yearly[y].sum / yearly[y].count).toFixed(2));
+
+                const lastYear = years[years.length - 1];
+                const lastVal = (yearly[lastYear].sum / yearly[lastYear].count).toFixed(2);
+                document.getElementById('ice-latest').textContent = `${lastYear}: ${lastVal} M km²`;
+            }
+
+            new Chart(document.getElementById('iceChart'), {
+                type: 'line',
+                data: {
+                    labels, datasets: [{
+                        label: 'Extent (M km²)', data: values,
+                        borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.08)',
+                        borderWidth: 2.5, pointRadius: 1.5, pointBackgroundColor: '#06b6d4',
+                        pointHoverRadius: 6, fill: true, tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y} M km²` } } },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+                        y: { grid: { color: gridColor }, ticks: { callback: v => v + ' M km²' } }
+                    }
+                }
+            });
+        }
+
+        // ── Load all charts ──
+        loadCO2Chart();
+        loadTempChart();
+        loadCH4Chart();
+        loadN2OChart();
+        loadIceChart();
+
+        // ── Scroll reveal ──
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.chart-card').forEach(el => { el.classList.add('reveal'); observer.observe(el); });
+    </script>
+
+</body>
+</html>
