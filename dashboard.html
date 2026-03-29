@@ -397,24 +397,28 @@
         // ── To update: change values below and the date in the HTML header ──
         // ── Latest prices from ICAP, CarbonCredits.com, EMBER (March 2026) ──
         
-    async function loadCarbonChart() {
+// ══════════════════════════════════════════════
+// 4. CARBON PRICES (Live Proxy Fetch + Fallback)
+// ══════════════════════════════════════════════
+async function loadCarbonChart() {
     // 1. Static fallback data
     let etsData =[
-        { name: 'EU ETS',          price: 70, color: '#38bdf8' },
-        { name: 'UK ETS',          price: 50, color: '#60a5fa' },
-        { name: 'California CaT',  price: 38, color: '#818cf8' },
-        { name: 'New Zealand',     price: 33, color: '#a78bfa' },
-        { name: 'China ETS',       price: 13, color: '#e879f9' },
-        { name: 'South Korea',     price: 8,  color: '#c084fc' },
+        { name: 'EU ETS',          price: 70.00, color: '#38bdf8' },
+        { name: 'UK ETS',          price: 50.00, color: '#60a5fa' },
+        { name: 'California CaT',  price: 38.00, color: '#818cf8' },
+        { name: 'New Zealand',     price: 33.00, color: '#a78bfa' },
+        { name: 'China ETS',       price: 13.00, color: '#e879f9' },
+        { name: 'South Korea',     price: 8.00,  color: '#c084fc' },
     ];
 
+    const updateLabel = document.getElementById('carbon-latest');
+
     try {
-        // 2. Fetch live Physical Carbon EUA ETC (CO2.MI) in Euros and the EUR/USD exchange rate
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const euaUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/CO2.MI');
-        const eurUsdUrl = encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/EURUSD=X');
+        // 2. We use corsproxy.io instead, which routes requests differently to bypass blocks
+        const proxyUrl = 'https://corsproxy.io/?';
+        const euaUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/CO2.MI');
+        const eurUsdUrl = encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/EURUSD=X');
         
-        // Fetch both the carbon price and currency exchange rate at the same time
         const[resEua, resFx] = await Promise.all([
             fetch(proxyUrl + euaUrl, { cache: "no-store" }),
             fetch(proxyUrl + eurUsdUrl, { cache: "no-store" })
@@ -424,27 +428,28 @@
             const dataEua = await resEua.json();
             const dataFx = await resFx.json();
             
-            // Extract the live market prices from the JSON structures
             const euaEurPrice = dataEua.chart.result[0].meta.regularMarketPrice;
             const eurUsdRate = dataFx.chart.result[0].meta.regularMarketPrice;
             
             if (euaEurPrice && eurUsdRate) {
-                // Convert the Euro price to USD
                 const liveEuPriceUsd = euaEurPrice * eurUsdRate;
-                
-                // Update the EU ETS object with the accurate live USD price
                 etsData.find(d => d.name === 'EU ETS').price = parseFloat(liveEuPriceUsd.toFixed(2));
                 
-                // Update the dashboard UI
-                const updateLabel = document.getElementById('carbon-latest');
+                // Success: Show the Green Dot
                 if (updateLabel) {
                     updateLabel.innerHTML = `Live EU ETS Data <span class="w-2 h-2 inline-block rounded-full bg-green-400 ml-1 pulse-dot"></span>`;
                     updateLabel.classList.replace('text-slate-500', 'text-accent');
                 }
             }
+        } else {
+            throw new Error(`Yahoo Finance blocked the proxy request (Status: ${resEua.status})`);
         }
     } catch (error) {
-        console.warn("Could not fetch live carbon prices, using static fallback data.", error);
+        console.warn("Live fetch failed, falling back to static data.", error);
+        // Failure: Visually show the user that it fell back to static data!
+        if (updateLabel) {
+            updateLabel.innerHTML = `Using Static Fallback <i class="fa-solid fa-triangle-exclamation text-yellow-500 ml-1"></i>`;
+        }
     }
 
     // 3. Render the chart
@@ -469,8 +474,15 @@
             interaction: { intersect: false },
             plugins: { 
                 legend: { display: false }, 
-                tooltip: { backgroundColor: '#1e293b', borderColor: '#475569', borderWidth: 1, titleColor: '#f1f5f9', bodyColor: '#94a3b8', callbacks: { label: ctx => `$${ctx.parsed.x.toFixed(2)} / tCO₂` }
- } 
+                tooltip: { 
+                    backgroundColor: '#1e293b', 
+                    borderColor: '#475569', 
+                    borderWidth: 1, 
+                    titleColor: '#f1f5f9', 
+                    bodyColor: '#94a3b8', 
+                    // This forces the tooltips to always show two decimal places!
+                    callbacks: { label: ctx => `$${ctx.parsed.x.toFixed(2)} / tCO₂` } 
+                } 
             },
             scales: {
                 y: { grid: { display: false }, ticks: { font: { size: 12 } } },
