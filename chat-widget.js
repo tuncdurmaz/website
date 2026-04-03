@@ -11,7 +11,7 @@
   // ═══════════════════════════════════════════
   //  CONFIGURATION — change this after deployment
   // ═══════════════════════════════════════════
-const WORKER_URL = 'https://durmaz-chat.tuncdurmaz.workers.dev';
+  const WORKER_URL = 'https://durmaz-chat.YOUR_SUBDOMAIN.workers.dev';
   // After deploying your Cloudflare Worker, replace the URL above.
   // Example: 'https://durmaz-chat.tuncdurmaz.workers.dev'
 
@@ -208,11 +208,7 @@ const WORKER_URL = 'https://durmaz-chat.tuncdurmaz.workers.dev';
     <div class="td-chat-messages" id="td-messages">
       <div class="td-msg td-msg-assistant">Hi! I can answer questions about Prof. Durmaz's research, publications, teaching, and background. What would you like to know?</div>
     </div>
-    <div class="td-suggestions" id="td-suggestions">
-      <button onclick="tdAsk(this.textContent)">What are his main research areas?</button>
-      <button onclick="tdAsk(this.textContent)">Has he published on carbon capture?</button>
-      <button onclick="tdAsk(this.textContent)">Where did he get his PhD?</button>
-    </div>
+    <div class="td-suggestions" id="td-suggestions"></div>
     <div class="td-chat-input">
       <input type="text" id="td-input" placeholder="Ask a question..." autocomplete="off" />
       <button id="td-send" aria-label="Send message">
@@ -233,6 +229,34 @@ const WORKER_URL = 'https://durmaz-chat.tuncdurmaz.workers.dev';
   const inputEl = document.getElementById('td-input');
   const sendBtn = document.getElementById('td-send');
   const suggestionsEl = document.getElementById('td-suggestions');
+
+  // ── Randomized suggested questions (show 2 from pool) ──
+  const questionPool = [
+    "What are his main research areas?",
+    "Has he published on carbon capture (CCS)?",
+    "Where did he get his PhD?",
+    "What courses does he teach?",
+    "What is the TRANSMIT COST Action?",
+    "Has he worked with the World Bank?",
+    "What programming tools does he use?",
+    "What languages does he speak?",
+    "Does he have any policy advisory roles?",
+    "What is his most recent publication?",
+    "What is the Climate Dashboard about?",
+    "Has he worked on electricity markets?",
+    "What is the TTGV Climate Pioneer program?",
+    "Has he published on renewable energy?",
+    "Where has he given invited talks?",
+    "Has he worked on circular economy topics?",
+  ];
+  function showRandomSuggestions() {
+    const shuffled = questionPool.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 2);
+    suggestionsEl.innerHTML = selected
+      .map(q => `<button onclick="tdAsk(this.textContent)">${q}</button>`)
+      .join('');
+  }
+  showRandomSuggestions();
 
   // Toggle
   fab.addEventListener('click', () => {
