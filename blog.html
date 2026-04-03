@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Tunç Durmaz</title>
+    <meta name="description" content="Commentary on energy economics, climate policy, and the green transition — by Tunç Durmaz.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#0f172a',
+                        bgCard: '#1e293b',
+                        accent: '#38bdf8',
+                        textMain: '#f1f5f9',
+                        textMuted: '#94a3b8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        #mobile-menu { display: none; }
+        #mobile-menu.open { display: block; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Blog-specific styles */
+        .blog-content { line-height: 1.8; }
+        .blog-content p { margin-bottom: 1em; }
+        .blog-content h2, .blog-content h3 { font-weight: 700; color: #f1f5f9; margin-top: 1.5em; margin-bottom: 0.5em; }
+        .blog-content h2 { font-size: 1.25rem; }
+        .blog-content h3 { font-size: 1.1rem; }
+        .blog-content ul, .blog-content ol { margin-left: 1.5em; margin-bottom: 1em; }
+        .blog-content li { margin-bottom: 0.3em; }
+        .blog-content a { color: #38bdf8; text-decoration: underline; }
+        .blog-content blockquote { border-left: 3px solid #38bdf8; padding-left: 1em; color: #cbd5e1; font-style: italic; margin: 1em 0; }
+        .blog-content code { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    </style>
+</head>
+<body class="bg-bgDark text-textMain font-sans antialiased selection:bg-accent selection:text-bgDark">
+
+    <!-- ═══ NAV ═══ -->
+    <nav class="fixed w-full z-50 bg-bgDark/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="text-xl font-bold tracking-tight text-white">Tunç <span class="text-accent">Durmaz</span></a>
+                
+                <button onclick="document.getElementById('mobile-menu').classList.toggle('open')" class="md:hidden text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html#about" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="dashboard.html" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="blog.html" class="text-accent px-3 py-2 rounded-md text-sm font-medium">Blog</a>
+                        <a href="index.html#projects" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                        <a href="index.html#cv" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
+                        <a href="index.html#teaching" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
+                        <a href="index.html#talks" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Talks</a>
+                        <a href="index.html#publications" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Publications</a>
+                        <a href="index.html#contact" class="border border-accent text-accent hover:bg-accent hover:text-bgDark transition-all px-4 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden pb-4 space-y-2">
+                <a href="index.html#about" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
+                <a href="dashboard.html" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                <a href="blog.html" class="block text-accent px-3 py-2 rounded-md text-sm font-medium">Blog</a>
+                <a href="index.html#projects" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                <a href="index.html#cv" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
+                <a href="index.html#teaching" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
+                <a href="index.html#talks" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Talks</a>
+                <a href="index.html#publications" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Publications</a>
+                <a href="index.html#contact" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ HEADER ═══ -->
+    <section class="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <div class="flex items-center gap-3 mb-2">
+            <a href="index.html" class="text-textMuted hover:text-accent text-sm transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Home</a>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-600">Blog</span>
+        </h1>
+        <p class="text-lg text-textMuted max-w-2xl leading-relaxed">
+            Commentary on energy economics, climate policy, and the green transition.
+        </p>
+
+        <!-- Category filters -->
+        <div class="flex flex-wrap gap-2 mt-6" id="blog-filters">
+            <button onclick="filterBlog('all')" class="blog-filter active px-4 py-1.5 rounded-full text-sm font-medium bg-slate-700 text-white transition-colors border border-transparent">All</button>
+            <button onclick="filterBlog('climate')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Climate Policy</button>
+            <button onclick="filterBlog('energy')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Energy</button>
+            <button onclick="filterBlog('opinion')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Opinion</button>
+            <button onclick="filterBlog('research')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Research Notes</button>
+        </div>
+    </section>
+
+    <!-- ═══ POSTS ═══ -->
+    <section class="pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <div class="space-y-8" id="blog-posts">
+            <!-- Posts are rendered here by JavaScript -->
+        </div>
+        <div id="blog-empty" class="hidden text-center py-16 text-textMuted">
+            <i class="fa-solid fa-pen-nib text-3xl mb-4 text-slate-600"></i>
+            <p>No posts in this category yet.</p>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="bg-bgCard pt-10 pb-8 border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-slate-600 text-sm">
+                &copy; 2026 Tunç Durmaz. Yıldız Technical University, Department of Economics. <br>
+                Istanbul, Türkiye.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+    // ════════════════════════════════════════════════════════════════
+    //  BLOG POSTS — Add new posts here. Newest first.
+    //
+    //  Each post has:
+    //    id:       unique slug (used for anchor links)
+    //    title:    post title
+    //    date:     display date string
+    //    category: one of 'climate', 'energy', 'opinion', 'research'
+    //    tags:     array of short labels
+    //    summary:  1-2 sentence preview (shown on homepage too)
+    //    content:  full HTML content of the post
+    //    readTime: estimated read time string
+    //
+    //  For content, write HTML directly. Use <p>, <h2>, <h3>,
+    //  <blockquote>, <ul>/<li>, <a>, <strong>, <em>, <code>.
+    // ════════════════════════════════════════════════════════════════
+
+    const BLOG_POSTS = [
+
+      {
+        id: 'welcome-to-blog',
+        title: 'Why I Started Writing Here',
+        date: 'April 2026',
+        category: 'opinion',
+        tags: ['Personal', 'Academia'],
+        summary: 'A few words on why I decided to add a blog to my academic website — and what I plan to write about.',
+        readTime: '2 min read',
+        content: `
+          <p>For years, my writing has lived exclusively in journal articles and book chapters — peer-reviewed, polished, and published months (sometimes years) after the ideas first formed. That process is essential for rigorous research, but it leaves little room for the kind of timely, informal commentary that I often find myself sharing with colleagues and students over coffee.</p>
+          <p>This blog is my attempt to bridge that gap. Here I plan to write about the economics of climate change, energy transitions, and policy design — the same topics I research formally — but in a more accessible, opinionated, and timely format.</p>
+          <p>Some posts will be short reactions to new data or policy developments. Others will be longer essays exploring ideas that don't yet fit into a paper but deserve a public airing. I'll also occasionally share notes from my research process — the false starts, surprising findings, and methodological choices that get stripped from the final published version.</p>
+          <p>If any of this resonates, I'd love to hear from you. You can reach me at <a href="mailto:tdurmaz@yildiz.edu.tr">tdurmaz@yildiz.edu.tr</a>.</p>
+        `
+      },
+
+      // ── TEMPLATE: Copy this block and fill in your content ──
+      // {
+      //   id: 'your-post-slug',
+      //   title: 'Your Post Title',
+      //   date: 'Month Year',
+      //   category: 'climate',  // climate | energy | opinion | research
+      //   tags: ['Tag1', 'Tag2'],
+      //   summary: 'One or two sentence preview.',
+      //   readTime: 'X min read',
+      //   content: `
+      //     <p>Your content here. Use HTML tags.</p>
+      //     <p>Second paragraph.</p>
+      //     <h2>A Subheading</h2>
+      //     <p>More content...</p>
+      //   `
+      // },
+
+    ];
+
+    // ════════════════════════════════════════════════════════════════
+    //  RENDERING (no need to edit below)
+    // ════════════════════════════════════════════════════════════════
+
+    const postsContainer = document.getElementById('blog-posts');
+    const emptyState = document.getElementById('blog-empty');
+
+    function renderPosts(filter = 'all') {
+      const filtered = filter === 'all'
+        ? BLOG_POSTS
+        : BLOG_POSTS.filter(p => p.category === filter);
+
+      if (filtered.length === 0) {
+        postsContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      postsContainer.innerHTML = filtered.map(post => `
+        <article class="blog-post bg-bgCard border border-slate-700 rounded-xl overflow-hidden hover:border-slate-600 transition-all" id="${post.id}" data-category="${post.category}">
+          <div class="p-8">
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              <span class="text-xs font-mono text-slate-500">${post.date}</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-xs text-textMuted">${post.readTime}</span>
+              ${post.tags.map(t => `<span class="px-2 py-0.5 rounded-full text-xs bg-slate-800 border border-slate-700 text-slate-400">${t}</span>`).join('')}
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3 leading-snug">${post.title}</h2>
+            <p class="text-textMuted mb-5 leading-relaxed">${post.summary}</p>
+            <div class="blog-content text-slate-300 text-[15px] hidden" id="content-${post.id}">
+              ${post.content}
+            </div>
+            <button onclick="togglePost('${post.id}')" id="btn-${post.id}" class="inline-flex items-center gap-2 text-accent hover:text-white text-sm font-semibold transition-colors mt-1">
+              <span>Read more</span>
+              <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+            </button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function togglePost(id) {
+      const content = document.getElementById('content-' + id);
+      const btn = document.getElementById('btn-' + id);
+      const isHidden = content.classList.contains('hidden');
+
+      content.classList.toggle('hidden');
+      btn.querySelector('span').textContent = isHidden ? 'Show less' : 'Read more';
+      btn.querySelector('i').style.transform = isHidden ? 'rotate(180deg)' : '';
+
+      if (isHidden) {
+        // Smooth scroll to the article
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function filterBlog(category) {
+      // Update button styles
+      document.querySelectorAll('.blog-filter').forEach(btn => {
+        btn.classList.remove('bg-slate-700', 'text-white', 'border-transparent');
+        btn.classList.add('border-slate-600', 'text-textMuted');
+      });
+      event.target.classList.add('bg-slate-700', 'text-white', 'border-transparent');
+      event.target.classList.remove('border-slate-600', 'text-textMuted');
+
+      renderPosts(category);
+    }
+
+    // Check for hash link (e.g., blog.html#welcome-to-blog)
+    function checkHash() {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) {
+            togglePost(hash);
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 300);
+      }
+    }
+
+    // Initial render
+    renderPosts();
+    checkHash();
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('article').forEach(el => { el.classList.add('reveal'); observer.observe(el); });
+    </script>
+
+    <script src="chat-widget.js"></script>
+
+</body>
+</html>

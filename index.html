@@ -68,6 +68,7 @@
                     <div class="ml-10 flex items-baseline space-x-8">
                         <a href="#about" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
                         <a href="dashboard.html" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="blog.html" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Blog</a>
                         <a href="#projects" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
                         <a href="#cv" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
                         <a href="#teaching" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
@@ -81,6 +82,7 @@
             <div id="mobile-menu" class="md:hidden pb-4 space-y-2">
                 <a href="#about" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
                 <a href="dashboard.html" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                <a href="blog.html" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Blog</a>
                 <a href="#projects" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
                 <a href="#cv" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">CV</a>
                 <a href="#teaching" class="block hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Teaching</a>
@@ -186,6 +188,42 @@
                 </div>
             </div>
         </a>
+    </section>
+
+    <section id="blog-preview" class="py-20 bg-bgCard border-y border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold border-l-4 border-accent pl-4">Latest Writing</h2>
+                <a href="blog.html" class="mt-4 md:mt-0 inline-flex items-center text-accent hover:text-white text-sm font-semibold transition-colors">
+                    View all posts <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Blog preview cards — update these when you publish new posts -->
+            <div class="grid md:grid-cols-2 gap-6" id="blog-preview-cards">
+
+                <a href="blog.html#welcome-to-blog" class="block p-6 rounded-xl bg-bgDark border border-slate-700 hover:border-accent transition-all group">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-xs font-mono text-slate-500">April 2026</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs bg-slate-800 border border-slate-700 text-slate-400">Opinion</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent transition-colors">Why I Started Writing Here</h3>
+                    <p class="text-textMuted text-sm leading-relaxed">A few words on why I decided to add a blog to my academic website — and what I plan to write about.</p>
+                    <span class="inline-flex items-center gap-1 text-accent text-xs font-semibold mt-3 group-hover:translate-x-1 transition-transform">
+                        Read <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </a>
+
+                <!-- Placeholder for next post — replace when you publish -->
+                <div class="p-6 rounded-xl bg-bgDark border border-slate-700/50 border-dashed flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-pen-nib text-2xl text-slate-700 mb-2"></i>
+                        <p class="text-slate-600 text-sm">More posts coming soon</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </section>
 
     <section id="projects" class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
