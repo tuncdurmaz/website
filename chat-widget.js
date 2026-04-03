@@ -11,7 +11,7 @@
   // ═══════════════════════════════════════════
   //  CONFIGURATION — change this after deployment
   // ═══════════════════════════════════════════
-  const WORKER_URL = 'https://durmaz-chat.YOUR_SUBDOMAIN.workers.dev';
+  const WORKER_URL = 'https://durmaz-chat.tuncdurmaz.workers.dev';
   // After deploying your Cloudflare Worker, replace the URL above.
   // Example: 'https://durmaz-chat.tuncdurmaz.workers.dev'
 
