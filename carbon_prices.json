@@ -1,9 +1,9 @@
 {
-  "last_updated": "April 08, 2026 (17:58 UTC)",
+  "last_updated": "April 08, 2026 (19:11 UTC)",
   "prices": [
     {
       "name": "EU ETS",
-      "price": 78.99,
+      "price": 78.86,
       "color": "#38bdf8"
     },
     {
@@ -32,5 +32,5 @@
       "color": "#c084fc"
     }
   ],
-  "exchange_rate": "1 EUR = 1.1675 USD"
+  "exchange_rate": "1 EUR = 1.1655 USD"
 }
