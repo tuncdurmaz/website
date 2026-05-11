@@ -1,9 +1,12 @@
-name: Update Carbon Prices Daily
+name: Update Dashboard Data
 
 on:
   schedule:
-    - cron: '0 * * * 1-5' # Runs exactly on the hour, every hour, Mon-Fri
-  workflow_dispatch: # Allows you to click a button to run it manually
+    # Hourly Mon-Fri for carbon prices (markets); the climate datasets
+    # only refresh once a day at 04:00 UTC since NOAA/NASA/NSIDC publish monthly.
+    - cron: '0 * * * 1-5'
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Run manually from the Actions tab
 
 permissions:
   contents: write
@@ -20,12 +23,16 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Run scraping script
+      - name: Update carbon prices (ETS markets)
         run: python update_prices.py
+
+      - name: Update climate data (CO2, CH4, N2O, temp, sea ice)
+        run: python update_climate.py
+        continue-on-error: true  # don't fail the workflow if NOAA is briefly down
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add carbon_prices.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update carbon prices" && git push)
+          git add carbon_prices.json climate_data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update dashboard data" && git push)
