@@ -5,9 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tunç Durmaz | Economics & Energy Transition</title>
     <meta name="description" content="Professor of Economics & TTGV Climate Pioneer. Specializing in Energy Economics, CCUS, and Climate Policy.">
-    
+    <meta name="author" content="Tunç Durmaz">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="canonical" href="https://www.tuncdurmaz.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Tunç Durmaz">
+    <meta property="og:title" content="Tunç Durmaz | Economics & Energy Transition">
+    <meta property="og:description" content="Professor of Economics & TTGV Climate Pioneer. Specializing in Energy Economics, CCUS, and Climate Policy.">
+    <meta property="og:url" content="https://www.tuncdurmaz.com/">
+    <meta property="og:image" content="https://www.tuncdurmaz.com/profile.png">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@tuncdurmaz_">
+    <meta name="twitter:creator" content="@tuncdurmaz_">
+    <meta name="twitter:title" content="Tunç Durmaz | Economics & Energy Transition">
+    <meta name="twitter:description" content="Professor of Economics & TTGV Climate Pioneer. Specializing in Energy Economics, CCUS, and Climate Policy.">
+    <meta name="twitter:image" content="https://www.tuncdurmaz.com/profile.png">
+
+    <!-- Favicon (inline SVG: TD on the accent palette) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Inter,system-ui,sans-serif' font-weight='800' font-size='30' fill='%2338bdf8'%3ETD%3C/text%3E%3C/svg%3E">
+
+    <!-- Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script>
@@ -50,18 +78,61 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Visually hidden but available to assistive tech */
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+        }
+        .skip-link:focus {
+            position: fixed; top: 0.5rem; left: 0.5rem; z-index: 100; width: auto; height: auto;
+            clip: auto; padding: 0.5rem 1rem; background: #38bdf8; color: #0f172a;
+            border-radius: 0.375rem; font-weight: 700;
+        }
     </style>
+
+    <!-- JSON-LD: Person -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Tunç Durmaz",
+      "url": "https://www.tuncdurmaz.com/",
+      "image": "https://www.tuncdurmaz.com/profile.png",
+      "jobTitle": "Professor of Economics",
+      "description": "Energy economics, CCUS, and climate policy researcher.",
+      "affiliation": {
+        "@type": "EducationalOrganization",
+        "name": "Yıldız Technical University",
+        "url": "https://www.yildiz.edu.tr/"
+      },
+      "alumniOf": [
+        { "@type": "EducationalOrganization", "name": "Norwegian School of Economics (NHH)" },
+        { "@type": "EducationalOrganization", "name": "University of Southern California" },
+        { "@type": "EducationalOrganization", "name": "Marmara University" },
+        { "@type": "EducationalOrganization", "name": "Dokuz Eylül University" }
+      ],
+      "knowsAbout": ["Energy Economics", "Climate Policy", "Carbon Capture Utilization and Storage", "Green Growth", "Input-Output Analysis"],
+      "sameAs": [
+        "https://scholar.google.com.tr/citations?user=HYWXaoQAAAAJ",
+        "https://www.linkedin.com/in/tunç-durmaz-bbb3611",
+        "https://x.com/tuncdurmaz_"
+      ]
+    }
+    </script>
 </head>
 <body class="bg-bgDark text-textMain font-sans antialiased selection:bg-accent selection:text-bgDark">
 
-    <nav class="fixed w-full z-50 bg-bgDark/90 backdrop-blur-md border-b border-slate-800">
+    <a href="#about" class="skip-link sr-only">Skip to main content</a>
+
+    <nav class="fixed w-full z-50 bg-bgDark/90 backdrop-blur-md border-b border-slate-800" aria-label="Primary">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <span class="text-xl font-bold tracking-tight text-white">Tunç <span class="text-accent">Durmaz</span></span>
-                
+
                 <!-- Mobile menu button -->
-                <button onclick="document.getElementById('mobile-menu').classList.toggle('open')" class="md:hidden text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-bars text-xl"></i>
+                <button id="mobile-menu-button" type="button" aria-label="Toggle navigation menu" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl" aria-hidden="true"></i>
                 </button>
 
                 <div class="hidden md:block">
@@ -93,10 +164,12 @@
         </div>
     </nav>
 
+    <main id="main">
+
     <section id="about" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12">
         <div class="lg:w-2/3">
             <div class="inline-flex items-center px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50 text-accent text-xs font-semibold uppercase tracking-wide mb-6">
-                <i class="fa-solid fa-chart-pie mr-2"></i> Research Focus: Economics of Mitigation
+                <i class="fa-solid fa-chart-pie mr-2" aria-hidden="true"></i> Research Focus: Economics of Mitigation
             </div>
             
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
@@ -134,7 +207,7 @@
                 
                 <div class="p-6 rounded-xl bg-bgDark border border-slate-700 hover:border-accent transition-colors group">
                     <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-accent transition-colors">
-                        <i class="fa-solid fa-atom text-xl text-accent group-hover:text-bgDark"></i>
+                        <i class="fa-solid fa-atom text-xl text-accent group-hover:text-bgDark" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Energy Economics & CCUS</h3>
                     <p class="text-textMuted text-sm leading-relaxed">
@@ -144,7 +217,7 @@
 
                 <div class="p-6 rounded-xl bg-bgDark border border-slate-700 hover:border-accent transition-colors group">
                     <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-accent transition-colors">
-                        <i class="fa-solid fa-scale-balanced text-xl text-accent group-hover:text-bgDark"></i>
+                        <i class="fa-solid fa-scale-balanced text-xl text-accent group-hover:text-bgDark" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Policy & Advisory</h3>
                     <p class="text-textMuted text-sm leading-relaxed">
@@ -154,7 +227,7 @@
 
                 <div class="p-6 rounded-xl bg-bgDark border border-slate-700 hover:border-accent transition-colors group">
                     <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-accent transition-colors">
-                        <i class="fa-solid fa-code text-xl text-accent group-hover:text-bgDark"></i>
+                        <i class="fa-solid fa-code text-xl text-accent group-hover:text-bgDark" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Quantitative Modeling</h3>
                     <p class="text-textMuted text-sm leading-relaxed">
@@ -174,7 +247,7 @@
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex items-center gap-6">
                     <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-500/20 to-sky-500/20 border border-slate-600 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-chart-line text-2xl text-accent"></i>
+                        <i class="fa-solid fa-chart-line text-2xl text-accent" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h3 class="text-xl font-bold text-white mb-1 group-hover:text-accent transition-colors">Explore the Full Dashboard</h3>
@@ -183,7 +256,7 @@
                 </div>
                 <div class="flex-shrink-0">
                     <span class="inline-flex items-center gap-2 bg-accent/10 text-accent px-5 py-2.5 rounded-lg font-bold text-sm group-hover:bg-accent group-hover:text-bgDark transition-all">
-                        Open Dashboard <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        Open Dashboard <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
                     </span>
                 </div>
             </div>
@@ -195,7 +268,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold border-l-4 border-accent pl-4">Latest Writing</h2>
                 <a href="blog.html" class="mt-4 md:mt-0 inline-flex items-center text-accent hover:text-white text-sm font-semibold transition-colors">
-                    View all posts <i class="fa-solid fa-arrow-right ml-2"></i>
+                    View all posts <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
                 </a>
             </div>
 
@@ -210,14 +283,14 @@
                     <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent transition-colors">Why I Started Writing Here</h3>
                     <p class="text-textMuted text-sm leading-relaxed">A few words on why I decided to add a blog to my academic website — and what I plan to write about.</p>
                     <span class="inline-flex items-center gap-1 text-accent text-xs font-semibold mt-3 group-hover:translate-x-1 transition-transform">
-                        Read <i class="fa-solid fa-arrow-right"></i>
+                        Read <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </span>
                 </a>
 
                 <!-- Placeholder for next post — replace when you publish -->
                 <div class="p-6 rounded-xl bg-bgDark border border-slate-700/50 border-dashed flex items-center justify-center">
                     <div class="text-center">
-                        <i class="fa-solid fa-pen-nib text-2xl text-slate-700 mb-2"></i>
+                        <i class="fa-solid fa-pen-nib text-2xl text-slate-700 mb-2" aria-hidden="true"></i>
                         <p class="text-slate-600 text-sm">More posts coming soon</p>
                     </div>
                 </div>
@@ -234,11 +307,11 @@
         <div class="flex flex-col md:flex-row gap-6 p-6 rounded-xl bg-bgCard border border-slate-700">
             <div class="md:w-1/4">
                 <span class="inline-block px-3 py-1 rounded text-xs font-bold bg-amber-900 text-amber-300 mb-2">Forthcoming</span>
-                <h4 class="font-bold text-sm">TÜBİTAK 1001 – BİLİMSEL VE TEKNOLOJİK ARAŞTIRMA PROJELERİNİ DESTEKLEME PROGRAMI</h4>
+                <h4 class="font-bold text-sm" lang="tr">TÜBİTAK 1001 – BİLİMSEL VE TEKNOLOJİK ARAŞTIRMA PROJELERİNİ DESTEKLEME PROGRAMI</h4>
                 <p class="text-xs text-textMuted mt-1">Principal Investigator / Coordinator</p>
             </div>
             <div class="md:w-3/4">
-                <p class="text-slate-300 mb-2">AB Sınırda Karbon Düzenleme Mekanizmasının Türkiye Ekonomisine Etkileri: Sektörel Maliyet Yükü, Fiyat Etkileri ve Sosyo-Ekonomik Yansımaların Hibrit Girdi-Çıktı Modeli ile Analizi</p>
+                <p class="text-slate-300 mb-2" lang="tr">AB Sınırda Karbon Düzenleme Mekanizmasının Türkiye Ekonomisine Etkileri: Sektörel Maliyet Yükü, Fiyat Etkileri ve Sosyo-Ekonomik Yansımaların Hibrit Girdi-Çıktı Modeli ile Analizi</p>
             </div>
         </div>
 
@@ -246,11 +319,11 @@
         <div class="flex flex-col md:flex-row gap-6 p-6 rounded-xl bg-bgCard border border-slate-700">
             <div class="md:w-1/4">
                 <span class="inline-block px-3 py-1 rounded text-xs font-bold bg-amber-900 text-amber-300 mb-2">Forthcoming</span>
-                <h4 class="font-bold text-sm">Araştırma Üniversiteleri Destek Programı (ADEP)</h4>
+                <h4 class="font-bold text-sm" lang="tr">Araştırma Üniversiteleri Destek Programı (ADEP)</h4>
                 <p class="text-xs text-textMuted mt-1">Principal Investigator / Coordinator</p>
             </div>
             <div class="md:w-3/4">
-                <p class="text-slate-300 mb-2">Büyük Veri ve Yapay Zeka Destekli Dinamik Girdi-Çıktı (AI-DIO) Modeli ile SKDM'nin Türkiye Ekonomisindeki Yapısal Dönüşüm Etkilerinin 2035 Projeksiyonu</p>
+                <p class="text-slate-300 mb-2" lang="tr">Büyük Veri ve Yapay Zeka Destekli Dinamik Girdi-Çıktı (AI-DIO) Modeli ile SKDM'nin Türkiye Ekonomisindeki Yapısal Dönüşüm Etkilerinin 2035 Projeksiyonu</p>
             </div>
         </div>
 
@@ -295,8 +368,8 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-10">
                 <h2 class="text-3xl font-bold border-l-4 border-accent pl-4">Curriculum Vitae</h2>
-                <a href="CV-TuncDurmaz.pdf" target="_blank" class="mt-4 md:mt-0 inline-flex items-center bg-accent text-bgDark hover:bg-white transition-colors px-5 py-2 rounded-lg font-bold text-sm">
-                    <i class="fa-solid fa-download mr-2"></i> Download Full CV (PDF)
+                <a href="CV-TuncDurmaz.pdf" target="_blank" rel="noopener noreferrer" class="mt-4 md:mt-0 inline-flex items-center bg-accent text-bgDark hover:bg-white transition-colors px-5 py-2 rounded-lg font-bold text-sm">
+                    <i class="fa-solid fa-download mr-2" aria-hidden="true"></i> Download Full CV (PDF)
                 </a>
             </div>
 
@@ -305,7 +378,7 @@
                 <!-- Education -->
                 <div>
                     <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-accent"></i> Education
+                        <i class="fa-solid fa-graduation-cap text-accent" aria-hidden="true"></i> Education
                     </h3>
                     <div class="space-y-4 border-l-2 border-slate-700 pl-5">
                         <div>
@@ -334,7 +407,7 @@
                 <!-- Selected Experience -->
                 <div>
                     <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <i class="fa-solid fa-briefcase text-accent"></i> Experience
+                        <i class="fa-solid fa-briefcase text-accent" aria-hidden="true"></i> Experience
                     </h3>
                     <div class="space-y-4 border-l-2 border-slate-700 pl-5">
                         <div>
@@ -376,7 +449,7 @@
             <div class="grid md:grid-cols-2 gap-10 mt-10">
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-code text-accent"></i> Tools
+                        <i class="fa-solid fa-code text-accent" aria-hidden="true"></i> Tools
                     </h3>
                     <div class="flex flex-wrap gap-2">
                         <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-sm text-textMuted">Matlab</span>
@@ -390,7 +463,7 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-language text-accent"></i> Languages
+                        <i class="fa-solid fa-language text-accent" aria-hidden="true"></i> Languages
                     </h3>
                     <div class="flex flex-wrap gap-2">
                         <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-sm text-textMuted">Turkish (native)</span>
@@ -442,7 +515,7 @@
     <section id="talks" class="py-20 bg-bgCard border-y border-slate-800">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-3 border-l-4 border-accent pl-4">Selected Talks & Lectures</h2>
-            <p class="text-textMuted mb-10 pl-5">Invited talks, keynotes, and guest lectures. For the full list of 40+ conference presentations, see my <a href="CV-TuncDurmaz.pdf" target="_blank" class="text-accent hover:underline">CV</a>.</p>
+            <p class="text-textMuted mb-10 pl-5">Invited talks, keynotes, and guest lectures. For the full list of 40+ conference presentations, see my <a href="CV-TuncDurmaz.pdf" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">CV</a>.</p>
 
             <div class="space-y-4">
 
@@ -465,11 +538,11 @@
         <div>
             <div class="flex items-center gap-2 mb-1.5">
                 <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-green-900/60 text-green-300">TTGV</span>
-                <h4 class="text-white font-semibold">İklim Lab: Yatayda Kesen Alanlar</h4>
+                <h4 class="text-white font-semibold" lang="tr">İklim Lab: Yatayda Kesen Alanlar</h4>
             </div>
             <p class="text-textMuted text-sm">Horizontal climate technologies — TTGV Climate Lab Community Program</p>
-            <a href="https://www.youtube.com/watch?v=lsmg5lbAHFc" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-white transition-colors mt-2">
-                <i class="fa-brands fa-youtube"></i> Listen to the interview
+            <a href="https://www.youtube.com/watch?v=lsmg5lbAHFc" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-white transition-colors mt-2">
+                <i class="fa-brands fa-youtube" aria-hidden="true"></i> Listen to the interview
             </a>
         </div>
         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded flex-shrink-0">2025</span>
@@ -628,11 +701,11 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-10">
                 <h2 class="text-3xl font-bold border-l-4 border-accent pl-4">Selected Publications</h2>
                 
-                <div class="flex flex-wrap gap-2 mt-4 md:mt-0" id="filter-buttons">
-                    <button onclick="filterPubs('all')" class="filter-btn active px-4 py-1 rounded-full text-sm font-medium bg-slate-700 hover:bg-slate-600 text-white transition-colors border border-transparent">All</button>
-                    <button onclick="filterPubs('energy')" class="filter-btn px-4 py-1 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Energy & Grid</button>
-                    <button onclick="filterPubs('climate')" class="filter-btn px-4 py-1 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Climate & Bioeconomy</button>
-                    <button onclick="filterPubs('ccus')" class="filter-btn px-4 py-1 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">CCUS</button>
+                <div class="flex flex-wrap gap-2 mt-4 md:mt-0" id="filter-buttons" role="group" aria-label="Filter publications by topic">
+                    <button type="button" data-cat="all"     aria-pressed="true"  onclick="filterPubs('all')"     class="filter-btn active px-4 py-1 rounded-full text-sm font-medium bg-slate-700 hover:bg-slate-600 text-white transition-colors border border-transparent">All</button>
+                    <button type="button" data-cat="energy"  aria-pressed="false" onclick="filterPubs('energy')"  class="filter-btn px-4 py-1 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Energy & Grid</button>
+                    <button type="button" data-cat="climate" aria-pressed="false" onclick="filterPubs('climate')" class="filter-btn px-4 py-1 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Climate & Bioeconomy</button>
+                    <button type="button" data-cat="ccus"    aria-pressed="false" onclick="filterPubs('ccus')"    class="filter-btn px-4 py-1 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">CCUS</button>
                 </div>
             </div>
 
@@ -644,8 +717,8 @@
                             <h4 class="text-lg font-semibold text-white">The Circular Bioeconomy: Concepts, Opportunities, and Limitations</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">In D. Zilberman, J. Zhuang, J. Wesseler & M. Khanna (Eds.), <em>Handbook of Circular Bioeconomy</em>, pp. 127–157. Springer Nature (2026). Open Access.</p>
                             
-                            <a href="https://link.springer.com/chapter/10.1007/978-3-032-07112-5_9" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Read on Springer
+                            <a href="https://link.springer.com/chapter/10.1007/978-3-032-07112-5_9" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> Read on Springer
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2026</span>
@@ -657,8 +730,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Empirical Insights into Economic Viability: Integrating Bitcoin Mining with Biorefineries Using a Stochastic Model</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With G. Semaan, G. Wang & G. Kumar. <em>Systems</em>, Vol. 13 (2025).</p>
-                            <a href="https://doi.org/10.3390/systems13050359" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.3390/systems13050359" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2025</span>
@@ -670,8 +743,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Comprehensive technical and economic evaluations of using second-life batteries</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With F. Turan & A.R. Boynuegri. <em>Journal of Energy Storage</em>, Vol. 120 (2025).</p>
-                            <a href="https://doi.org/10.1016/j.est.2025.116379" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.est.2025.116379" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2025</span>
@@ -683,8 +756,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Generation failures, strategic withholding, and capacity payments in the Turkish electricity market</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With S. Acar & S. Kızılkaya. <em>Energy Policy</em>, Vol. 184 (2024).</p>
-                            <a href="https://doi.org/10.1016/j.enpol.2023.113897" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.enpol.2023.113897" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2024</span>
@@ -696,8 +769,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">AI Revolution and Coordination Failure: Theory and Evidence</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With B. Ünveren & S. Sunal. <em>Journal of Macroeconomics</em>, Vol. 78 (2023).</p>
-                            <a href="https://doi.org/10.1016/j.jmacro.2023.103561" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.jmacro.2023.103561" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2023</span>
@@ -709,8 +782,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Feed-in tariff policy in Hong Kong: Is it efficient?</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With P. Dato & A. Pommeret. <em>City and Environment Interactions</em>, Vol. 10 (2021). Open Access.</p>
-                            <a href="https://doi.org/10.1016/j.cacint.2021.100056" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.cacint.2021.100056" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2021</span>
@@ -723,11 +796,11 @@
                             <h4 class="text-lg font-semibold text-white">Evaluating Carbon Capture and Storage in a Climate Model with Endogenous Technical Change</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With F. Schroyen. <em>Climate Change Economics</em>, Vol. 11 (2020).</p>
                             <div class="flex flex-wrap gap-2">
-                                <a href="https://doi.org/10.1142/S2010007820500037" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                    <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                                <a href="https://doi.org/10.1142/S2010007820500037" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                                 </a>
-                                <a href="durmaz_schroyen_2020.pdf" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                    <i class="fa-solid fa-file-pdf mr-2"></i> PDF
+                                <a href="durmaz_schroyen_2020.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                    <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i> PDF
                                 </a>
                             </div>
                         </div>
@@ -740,8 +813,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Smart Grids and Renewable Electricity Generation by Households</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With P. Dato & A. Pommeret. <em>Energy Economics</em>, Vol. 86 (2020).</p>
-                            <a href="https://doi.org/10.1016/j.eneco.2019.104562" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.eneco.2019.104562" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
@@ -753,8 +826,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Estimation of Residential Electricity Demand in Hong Kong under Electricity Charge Subsidies</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With A. Pommeret & H. Tastan. <em>Energy Economics</em>, Vol. 88 (2020).</p>
-                            <a href="https://doi.org/10.1016/j.eneco.2020.104742" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.eneco.2020.104742" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
@@ -766,8 +839,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Levelized Cost of Consumed Electricity</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With A. Pommeret. <em>Economics of Energy & Environmental Policy</em>, Vol. 9, No. 1 (2020).</p>
-                            <a href="https://doi.org/10.5547/2160-5890.9.1.tdur" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.5547/2160-5890.9.1.tdur" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2020</span>
@@ -779,8 +852,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Intermittent renewable electricity generation with smart grids</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With P. Dato & A. Pommeret. In <em>Climate and Energy Protection in the EU and China</em>, Springer (2019).</p>
-                            <a href="https://doi.org/10.1007/978-3-030-12004-7_7" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1007/978-3-030-12004-7_7" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2019</span>
@@ -792,8 +865,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">A two-sector model of economic growth with endogenous technical change and pollution abatement</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3">With J.-P. Amigues. <em>Environmental Modeling & Assessment</em>, Vol. 24(6), pp. 703–725 (2019).</p>
-                            <a href="https://doi.org/10.1007/s10666-019-09660-2" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1007/s10666-019-09660-2" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2019</span>
@@ -805,8 +878,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">The Economics of CCS: Why have CCS technologies not had an international breakthrough?</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3"><em>Renewable & Sustainable Energy Reviews</em>, Vol. 95, pp. 328–340 (2018).</p>
-                            <a href="https://doi.org/10.1016/j.rser.2018.07.007" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> DOI
+                            <a href="https://doi.org/10.1016/j.rser.2018.07.007" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> DOI
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2018</span>
@@ -818,8 +891,8 @@
                         <div>
                             <h4 class="text-lg font-semibold text-white">Optimal storage under uncertainty: investigating the implications of frugality and prudence</h4>
                             <p class="text-textMuted text-sm mt-1 mb-3"><em>Economics Bulletin</em>, Vol. 37(3), pp. 1624–1629 (2017).</p>
-                            <a href="http://www.accessecon.com/Pubs/EB/2017/Volume37/EB-17-V37-I3-P144.pdf" target="_blank" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Read Paper
+                            <a href="http://www.accessecon.com/Pubs/EB/2017/Volume37/EB-17-V37-I3-P144.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-bold text-accent hover:text-white transition-colors border border-slate-700 hover:border-accent rounded px-3 py-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-2" aria-hidden="true"></i> Read Paper
                             </a>
                         </div>
                         <span class="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded">2017</span>
@@ -830,31 +903,33 @@
         </div>
     </section>
 
+    </main>
+
     <footer id="contact" class="bg-bgCard pt-20 pb-10 border-t border-slate-800">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <h2 class="text-2xl font-bold mb-6">Get in Touch</h2>
             <div class="flex justify-center gap-8 mb-10">
                 <a href="#" id="email-link" class="flex flex-col items-center group">
                     <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center group-hover:bg-accent transition-colors mb-2">
-                        <i class="fa-solid fa-envelope text-xl text-white group-hover:text-bgDark"></i>
+                        <i class="fa-solid fa-envelope text-xl text-white group-hover:text-bgDark" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-textMuted group-hover:text-white">Email</span>
                 </a>
-                <a href="http://linkedin.com/in/tun%C3%A7-durmaz-bbb3611" target="_blank" class="flex flex-col items-center group">
+                <a href="http://linkedin.com/in/tun%C3%A7-durmaz-bbb3611" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center group">
                     <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-colors mb-2">
-                        <i class="fa-brands fa-linkedin text-xl text-white"></i>
+                        <i class="fa-brands fa-linkedin text-xl text-white" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-textMuted group-hover:text-white">LinkedIn</span>
                 </a>
-                <a href="https://scholar.google.com.tr/citations?user=HYWXaoQAAAAJ" target="_blank" class="flex flex-col items-center group">
+                <a href="https://scholar.google.com.tr/citations?user=HYWXaoQAAAAJ" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center group">
                     <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center group-hover:bg-sky-600 transition-colors mb-2">
-                        <i class="fa-solid fa-graduation-cap text-xl text-white"></i>
+                        <i class="fa-solid fa-graduation-cap text-xl text-white" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-textMuted group-hover:text-white">Scholar</span>
                 </a>
-                <a href="https://x.com/tuncdurmaz_" target="_blank" class="flex flex-col items-center group">
+                <a href="https://x.com/tuncdurmaz_" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center group">
                     <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center group-hover:bg-neutral-700 transition-colors mb-2">
-                        <i class="fa-brands fa-x-twitter text-xl text-white"></i>
+                        <i class="fa-brands fa-x-twitter text-xl text-white" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-textMuted group-hover:text-white">X</span>
                 </a>
@@ -867,6 +942,14 @@
     </footer>
 
     <script>
+        // Mobile menu toggle (keeps aria-expanded in sync)
+        function toggleMobileMenu() {
+            const btn  = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+            const open = menu.classList.toggle('open');
+            if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
         // Email obfuscation (prevents spam bots from scraping)
         (function() {
             var u = 'mailbox'; var d = 'tuncdurmaz.com';
@@ -878,10 +961,12 @@
         function filterPubs(category) {
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => {
+                const cat = btn.getAttribute('data-cat') || btn.textContent.trim().toLowerCase();
+                const isActive = (cat === category);
                 btn.classList.remove('bg-slate-700', 'text-white', 'border-transparent');
                 btn.classList.add('border-slate-600', 'text-textMuted');
-                
-                if (btn.textContent.toLowerCase().includes(category) || (category === 'all' && btn.textContent === 'All')) {
+                btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                if (isActive) {
                     btn.classList.add('bg-slate-700', 'text-white', 'border-transparent');
                     btn.classList.remove('border-slate-600', 'text-textMuted');
                 }

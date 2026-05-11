@@ -5,7 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog | Tunç Durmaz</title>
     <meta name="description" content="Commentary on energy economics, climate policy, and the green transition — by Tunç Durmaz.">
-    
+    <meta name="author" content="Tunç Durmaz">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="canonical" href="https://www.tuncdurmaz.com/blog.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Tunç Durmaz">
+    <meta property="og:title" content="Blog | Tunç Durmaz">
+    <meta property="og:description" content="Commentary on energy economics, climate policy, and the green transition — by Tunç Durmaz.">
+    <meta property="og:url" content="https://www.tuncdurmaz.com/blog.html">
+    <meta property="og:image" content="https://www.tuncdurmaz.com/profile.png">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@tuncdurmaz_">
+    <meta name="twitter:creator" content="@tuncdurmaz_">
+    <meta name="twitter:title" content="Blog | Tunç Durmaz">
+    <meta name="twitter:description" content="Commentary on energy economics, climate policy, and the green transition — by Tunç Durmaz.">
+    <meta name="twitter:image" content="https://www.tuncdurmaz.com/profile.png">
+
+    <!-- Favicon (inline SVG: TD on the accent palette) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Inter,system-ui,sans-serif' font-weight='800' font-size='30' fill='%2338bdf8'%3ETD%3C/text%3E%3C/svg%3E">
+
+    <!-- Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -49,18 +77,31 @@
         .blog-content a { color: #38bdf8; text-decoration: underline; }
         .blog-content blockquote { border-left: 3px solid #38bdf8; padding-left: 1em; color: #cbd5e1; font-style: italic; margin: 1em 0; }
         .blog-content code { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+
+        /* Visually hidden but available to assistive tech */
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+        }
+        .skip-link:focus {
+            position: fixed; top: 0.5rem; left: 0.5rem; z-index: 100; width: auto; height: auto;
+            clip: auto; padding: 0.5rem 1rem; background: #38bdf8; color: #0f172a;
+            border-radius: 0.375rem; font-weight: 700;
+        }
     </style>
 </head>
 <body class="bg-bgDark text-textMain font-sans antialiased selection:bg-accent selection:text-bgDark">
 
+    <a href="#main" class="skip-link sr-only">Skip to main content</a>
+
     <!-- ═══ NAV ═══ -->
-    <nav class="fixed w-full z-50 bg-bgDark/90 backdrop-blur-md border-b border-slate-800">
+    <nav class="fixed w-full z-50 bg-bgDark/90 backdrop-blur-md border-b border-slate-800" aria-label="Primary">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="index.html" class="text-xl font-bold tracking-tight text-white">Tunç <span class="text-accent">Durmaz</span></a>
-                
-                <button onclick="document.getElementById('mobile-menu').classList.toggle('open')" class="md:hidden text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-bars text-xl"></i>
+
+                <button id="mobile-menu-button" type="button" aria-label="Toggle navigation menu" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-bars text-xl" aria-hidden="true"></i>
                 </button>
 
                 <div class="hidden md:block">
@@ -91,10 +132,12 @@
         </div>
     </nav>
 
+    <main id="main">
+
     <!-- ═══ HEADER ═══ -->
     <section class="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <div class="flex items-center gap-3 mb-2">
-            <a href="index.html" class="text-textMuted hover:text-accent text-sm transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Home</a>
+            <a href="index.html" class="text-textMuted hover:text-accent text-sm transition-colors"><i class="fa-solid fa-arrow-left mr-1" aria-hidden="true"></i> Back to Home</a>
         </div>
         <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-600">Blog</span>
@@ -104,12 +147,12 @@
         </p>
 
         <!-- Category filters -->
-        <div class="flex flex-wrap gap-2 mt-6" id="blog-filters">
-            <button onclick="filterBlog('all')" class="blog-filter active px-4 py-1.5 rounded-full text-sm font-medium bg-slate-700 text-white transition-colors border border-transparent">All</button>
-            <button onclick="filterBlog('climate')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Climate Policy</button>
-            <button onclick="filterBlog('energy')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Energy</button>
-            <button onclick="filterBlog('opinion')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Opinion</button>
-            <button onclick="filterBlog('research')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Research Notes</button>
+        <div class="flex flex-wrap gap-2 mt-6" id="blog-filters" role="group" aria-label="Filter posts by category">
+            <button type="button" data-cat="all"      aria-pressed="true"  onclick="filterBlog('all')"      class="blog-filter active px-4 py-1.5 rounded-full text-sm font-medium bg-slate-700 text-white transition-colors border border-transparent">All</button>
+            <button type="button" data-cat="climate"  aria-pressed="false" onclick="filterBlog('climate')"  class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Climate Policy</button>
+            <button type="button" data-cat="energy"   aria-pressed="false" onclick="filterBlog('energy')"   class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Energy</button>
+            <button type="button" data-cat="opinion"  aria-pressed="false" onclick="filterBlog('opinion')"  class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Opinion</button>
+            <button type="button" data-cat="research" aria-pressed="false" onclick="filterBlog('research')" class="blog-filter px-4 py-1.5 rounded-full text-sm font-medium border border-slate-600 hover:border-accent text-textMuted hover:text-white transition-colors">Research Notes</button>
         </div>
     </section>
 
@@ -119,10 +162,12 @@
             <!-- Posts are rendered here by JavaScript -->
         </div>
         <div id="blog-empty" class="hidden text-center py-16 text-textMuted">
-            <i class="fa-solid fa-pen-nib text-3xl mb-4 text-slate-600"></i>
+            <i class="fa-solid fa-pen-nib text-3xl mb-4 text-slate-600" aria-hidden="true"></i>
             <p>No posts in this category yet.</p>
         </div>
     </section>
+
+    </main>
 
     <!-- ═══ FOOTER ═══ -->
     <footer class="bg-bgCard pt-10 pb-8 border-t border-slate-800">
@@ -135,6 +180,14 @@
     </footer>
 
     <script>
+    // Mobile menu toggle (keeps aria-expanded in sync)
+    function toggleMobileMenu() {
+        const btn  = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        const open = menu.classList.toggle('open');
+        if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
     // ════════════════════════════════════════════════════════════════
     //  BLOG POSTS — Add new posts here. Newest first.
     //
@@ -224,7 +277,7 @@
             </div>
             <button onclick="togglePost('${post.id}')" id="btn-${post.id}" class="inline-flex items-center gap-2 text-accent hover:text-white text-sm font-semibold transition-colors mt-1">
               <span>Read more</span>
-              <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+              <i class="fa-solid fa-chevron-down text-xs transition-transform" aria-hidden="true"></i>
             </button>
           </div>
         </article>
@@ -247,14 +300,18 @@
     }
 
     function filterBlog(category) {
-      // Update button styles
+      // Update button styles + aria-pressed
       document.querySelectorAll('.blog-filter').forEach(btn => {
+        const cat = btn.getAttribute('data-cat');
+        const isActive = (cat === category);
         btn.classList.remove('bg-slate-700', 'text-white', 'border-transparent');
         btn.classList.add('border-slate-600', 'text-textMuted');
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        if (isActive) {
+          btn.classList.add('bg-slate-700', 'text-white', 'border-transparent');
+          btn.classList.remove('border-slate-600', 'text-textMuted');
+        }
       });
-      event.target.classList.add('bg-slate-700', 'text-white', 'border-transparent');
-      event.target.classList.remove('border-slate-600', 'text-textMuted');
-
       renderPosts(category);
     }
 
