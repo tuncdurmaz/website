@@ -136,8 +136,8 @@
         "value": 424.61
       },
       {
-        "year": 2025,
-        "value": 427.35
+        "year": 2026,
+        "value": 429.81
       }
     ],
     "latest": {
@@ -235,8 +235,8 @@
         "value": 1929.4
       },
       {
-        "year": 2025,
-        "value": 1935.7
+        "year": 2026,
+        "value": 1940.4
       }
     ],
     "latest": {
@@ -298,8 +298,8 @@
         "value": 337.71
       },
       {
-        "year": 2025,
-        "value": 338.86
+        "year": 2026,
+        "value": 339.72
       }
     ],
     "latest": {
@@ -315,129 +315,129 @@
     "annual": [
       {
         "year": 1880,
-        "value": -0.0
+        "value": -0.18
       },
       {
         "year": 1885,
-        "value": -0.0
+        "value": -0.34
       },
       {
         "year": 1890,
-        "value": -0.0
+        "value": -0.36
       },
       {
         "year": 1895,
-        "value": -0.0
+        "value": -0.23
       },
       {
         "year": 1900,
-        "value": -0.0
+        "value": -0.09
       },
       {
         "year": 1905,
-        "value": -0.0
+        "value": -0.26
       },
       {
         "year": 1910,
-        "value": -0.0
+        "value": -0.44
       },
       {
         "year": 1915,
-        "value": -0.0
+        "value": -0.14
       },
       {
         "year": 1920,
-        "value": -0.0
+        "value": -0.28
       },
       {
         "year": 1925,
-        "value": -0.0
+        "value": -0.22
       },
       {
         "year": 1930,
-        "value": -0.0
+        "value": -0.16
       },
       {
         "year": 1935,
-        "value": -0.0
+        "value": -0.2
       },
       {
         "year": 1940,
-        "value": 0.0
+        "value": 0.12
       },
       {
         "year": 1945,
-        "value": 0.0
+        "value": 0.09
       },
       {
         "year": 1950,
-        "value": -0.0
+        "value": -0.18
       },
       {
         "year": 1955,
-        "value": -0.0
+        "value": -0.14
       },
       {
         "year": 1960,
-        "value": -0.0
+        "value": -0.02
       },
       {
         "year": 1965,
-        "value": -0.0
+        "value": -0.11
       },
       {
         "year": 1970,
-        "value": 0.0
+        "value": 0.03
       },
       {
         "year": 1975,
-        "value": -0.0
+        "value": -0.01
       },
       {
         "year": 1980,
-        "value": 0.0
+        "value": 0.26
       },
       {
         "year": 1985,
-        "value": 0.0
+        "value": 0.12
       },
       {
         "year": 1990,
-        "value": 0.0
+        "value": 0.45
       },
       {
         "year": 1995,
-        "value": 0.0
+        "value": 0.44
       },
       {
         "year": 2000,
-        "value": 0.0
+        "value": 0.39
       },
       {
         "year": 2005,
-        "value": 0.01
+        "value": 0.68
       },
       {
         "year": 2010,
-        "value": 0.01
+        "value": 0.72
       },
       {
         "year": 2015,
-        "value": 0.01
+        "value": 0.9
       },
       {
         "year": 2020,
-        "value": 0.01
+        "value": 1.01
       },
       {
         "year": 2025,
-        "value": 0.01
+        "value": 1.19
       }
     ],
     "latest": {
       "year": 2025,
-      "value": 0.01
+      "value": 1.19
     }
   },
-  "last_updated": "May 12, 2026 (18:29 UTC)"
+  "last_updated": "May 12, 2026 (19:49 UTC)"
 }
