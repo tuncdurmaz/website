@@ -429,10 +429,16 @@ Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     interaction: { intersect: false },
-                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y > 0 ? '+' : ''}${ctx.parsed.y}°C` } } },
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => `${ctx.parsed.y > 0 ? '+' : ''}${ctx.parsed.y.toFixed(2)}°C` } } },
                     scales: {
                         x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 12 } },
-                        y: { grid: { color: gridColor }, ticks: { callback: v => (v > 0 ? '+' : '') + v + '°C' } }
+                        y: {
+                            grid: { color: gridColor },
+                            ticks: {
+                                stepSize: 0.25,
+                                callback: v => (v > 0 ? '+' : '') + v.toFixed(1) + '°C'
+                            }
+                        }
                     }
                 }
             });
