@@ -271,8 +271,10 @@ def _fetch_globalwarming_arctic():
     payload = json.loads(text) if isinstance(text, str) else text
 
     # The API has used several top-level key names over time; try the known ones.
+    # 'arcticData' is the current (post-2025 rename) key; 'arcpiclice' was the
+    # older typo'd key that the dashboard's client-side fallback still references.
     series = None
-    for key in ('arcpiclice', 'arcticseaice', 'arctic_sea_ice', 'result', 'data'):
+    for key in ('arcticData', 'arcpiclice', 'arcticseaice', 'arctic_sea_ice', 'result', 'data'):
         v = payload.get(key) if isinstance(payload, dict) else None
         if isinstance(v, list) and v:
             series = v
