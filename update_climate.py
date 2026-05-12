@@ -121,9 +121,10 @@ def extend_with_ytd(annual, monthly):
     return out
 
 
-# ──────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
 # Fetchers — each returns the shape expected in climate_data.json
-# ──────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+
 
 def fetch_co2():
     annual_txt = http_get('https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_annmean_mlo.csv')
@@ -258,45 +259,92 @@ def _parse_nsidc_daily_to_sept(text):
     return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
 
 
-def fetch_ice():
-    """NSIDC Sea Ice Index v3 — Arctic September monthly extent.
-       This is the classic 'Arctic minimum' time series.
+def _parse_arctic_api_yearly(text):
+    """Parse global-warming.org Arctic API payload into yearly means."""
+    payload = json.loads(text)
+    rows = payload.get('arcpiclice') or []
+    by_year = {}
 
-       Strategy: read the monthly file first; if its most recent year is more
-       than ~1 year stale, supplement using daily data (which NSIDC updates
-       within ~1 day)."""
-    monthly_url = 'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.0.csv'
-    daily_url   = 'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv'
+    for row in rows:
+        try:
+            year = int(row.get('year'))
+            extent = float(row.get('extent'))
+        except (TypeError, ValueError):
+            continue
+        if extent <= 0:
+            continue
+        by_year.setdefault(year, []).append(extent)
+
+    return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
+
+
+def _try_fetch_rows(label, urls, parser):
+    """Try multiple URLs for the same dataset and return (rows, detail)."""
+    failures = []
+    for url in urls:
+        try:
+            rows = parser(http_get(url))
+            if rows:
+                latest = rows[-1][0]
+                return rows, f'{label}: {url} (latest {latest})'
+            failures.append(f'{url} -> empty data')
+        except Exception as e:
+            failures.append(f'{url} -> {e}')
+    raise RuntimeError(f'{label} failed: ' + '; '.join(failures))
+
+
+def fetch_ice():
+    """Arctic September extent with resilient fallbacks.
+       Try known NSIDC URL variants first, then fall back to the same
+       Arctic API the front-end already uses."""
+    monthly_urls = [
+        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.0.csv',
+        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.csv',
+        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent.csv',
+    ]
+    daily_urls = [
+        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv',
+        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.csv',
+        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily.csv',
+    ]
+    arctic_api_url = 'https://global-warming.org/api/arctic-api'
 
     rows = []
     used = []
     try:
-        rows = _parse_nsidc_monthly_sep(http_get(monthly_url))
-        used.append(f'monthly (latest {rows[-1][0] if rows else "?"})')
+        rows, detail = _try_fetch_rows('monthly', monthly_urls, _parse_nsidc_monthly_sep)
+        used.append(detail)
     except Exception as e:
-        used.append(f'monthly failed: {e}')
+        used.append(str(e))
 
-    # If monthly file's latest year is older than (current year - 1),
-    # try daily and merge any newer years it can supply.
     current_year = datetime.utcnow().year
     needs_daily = (not rows) or (rows[-1][0] < current_year - 1)
     if needs_daily:
         try:
-            daily_rows = _parse_nsidc_daily_to_sept(http_get(daily_url))
+            daily_rows, detail = _try_fetch_rows('daily', daily_urls, _parse_nsidc_daily_to_sept)
             existing = {y for y, _ in rows}
             added = [(y, v) for y, v in daily_rows if y not in existing]
             rows = sorted(rows + added)
-            used.append(f'daily (added {len(added)} years, latest {rows[-1][0] if rows else "?"})')
+            used.append(f'{detail}; added {len(added)} years; latest {rows[-1][0] if rows else "?"}')
         except Exception as e:
-            used.append(f'daily failed: {e}')
+            used.append(str(e))
+
+    if not rows:
+        try:
+            rows = _parse_arctic_api_yearly(http_get(arctic_api_url))
+            if rows:
+                used.append(f'arctic-api: {arctic_api_url} (latest {rows[-1][0]})')
+        except Exception as e:
+            used.append(f'arctic-api failed: {arctic_api_url} -> {e}')
 
     if not rows:
         raise RuntimeError(f'ice: no data ({"; ".join(used)})')
 
     rows.sort()
     annual = sparse_years(rows, every=3)
+    source = 'global-warming.org — Arctic API' if any(d.startswith('arctic-api:') for d in used) else 'NSIDC — Sea Ice Index, Arctic September extent'
     return {
-        'source': 'NSIDC — Sea Ice Index v3, Arctic September extent',
+        'source': source,
         'detail': '; '.join(used),
         'unit': 'million km²',
         'annual': [{'year': y, 'value': round(v, 2)} for y, v in annual],
@@ -304,9 +352,9 @@ def fetch_ice():
     }
 
 
-# ──────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
 # Orchestration
-# ──────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
 
 FETCHERS = {
     'co2':  fetch_co2,
