@@ -439,5 +439,84 @@
       "value": 1.19
     }
   },
-  "last_updated": "May 12, 2026 (20:27 UTC)"
+  "last_updated": "May 12, 2026 (20:41 UTC)",
+  "ice": {
+    "source": "global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)",
+    "detail": "NSIDC monthly FAILED: HTTP Error 404: Not Found; NSIDC daily FAILED: HTTP Error 404: Not Found; global-warming.org OK (latest 2026)",
+    "unit": "million km²",
+    "annual": [
+      {
+        "year": 1980,
+        "value": 23.55
+      },
+      {
+        "year": 1983,
+        "value": 23.7
+      },
+      {
+        "year": 1986,
+        "value": 23.27
+      },
+      {
+        "year": 1989,
+        "value": 23.37
+      },
+      {
+        "year": 1992,
+        "value": 23.5
+      },
+      {
+        "year": 1995,
+        "value": 23.19
+      },
+      {
+        "year": 1998,
+        "value": 23.47
+      },
+      {
+        "year": 2001,
+        "value": 23.25
+      },
+      {
+        "year": 2004,
+        "value": 23.19
+      },
+      {
+        "year": 2007,
+        "value": 22.14
+      },
+      {
+        "year": 2010,
+        "value": 22.79
+      },
+      {
+        "year": 2013,
+        "value": 23.39
+      },
+      {
+        "year": 2016,
+        "value": 21.35
+      },
+      {
+        "year": 2019,
+        "value": 21.05
+      },
+      {
+        "year": 2022,
+        "value": 21.37
+      },
+      {
+        "year": 2025,
+        "value": 20.74
+      },
+      {
+        "year": 2026,
+        "value": 18.02
+      }
+    ],
+    "latest": {
+      "year": 2026,
+      "value": 18.02
+    }
+  }
 }
