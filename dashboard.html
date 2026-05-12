@@ -644,7 +644,9 @@ Sources: <a href="https://carboncredits.com/carbon-prices-today/" target="_blank
 
             const climate = await climatePromise;
             const local = fromLocal(climate && climate.ice,
-                (l) => `${l.year}: ${l.value.toFixed(2)} M km²`);
+                (l) => l.month
+                    ? `${monthName(l.month)} ${l.year}: ${l.value.toFixed(2)} M km²`
+                    : `${l.year}: ${l.value.toFixed(2)} M km²`);
             if (local) {
                 labels = local.labels.map(String); values = local.values;
                 document.getElementById('ice-latest').textContent = local.latestText;

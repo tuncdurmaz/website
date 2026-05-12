@@ -278,21 +278,32 @@ def _fetch_globalwarming_arctic():
     #     }
     #   }
     # Despite the endpoint name 'arctic-api', the payload is GLOBAL sea ice extent.
+    #
+    # Returns: (annual_rows_for_COMPLETE_years, latest_monthly_obs_or_None)
+    #   - Complete-year filter avoids the misleading 'YTD cliff' for the current
+    #     year (e.g. 2026 with only 4 months would dip artificially).
+    #   - Latest monthly is surfaced separately so the dashboard badge can show
+    #     the most recent individual observation with its month.
     ad = payload.get('arcticData') if isinstance(payload, dict) else None
     if isinstance(ad, dict) and isinstance(ad.get('data'), dict):
         missing_sentinel = ad.get('description', {}).get('missing', -9999)
         by_year = {}
-        for ym_key, obj in ad['data'].items():
+        latest_monthly = None  # (year, month, value), updated to most recent obs
+        for ym_key, obj in sorted(ad['data'].items()):  # sort to find true 'latest'
             try:
                 y = int(str(ym_key)[:4])
+                m = int(str(ym_key)[4:6])
                 ext = float(obj.get('value'))
             except (TypeError, ValueError, AttributeError):
                 continue
             if ext <= 0 or ext == missing_sentinel:
                 continue
             by_year.setdefault(y, []).append(ext)
-        if by_year:
-            return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
+            latest_monthly = (y, m, ext)
+        # Only keep years that have all 12 months — drops in-progress current year
+        complete = [(y, sum(vs) / len(vs)) for y, vs in sorted(by_year.items()) if len(vs) == 12]
+        if complete:
+            return complete, latest_monthly
 
     # Legacy fallback: older list-of-rows shapes (arcpiclice etc.) — kept in
     # case the API reverts or another mirror exposes the old format.
@@ -331,7 +342,7 @@ def _fetch_globalwarming_arctic():
             f'sample row keys: {sample_keys}; first row: {str(sample)[:160]}'
         )
 
-    return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
+    return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items()), None
 
 
 def fetch_ice():
@@ -371,9 +382,10 @@ def fetch_ice():
             print(f"    · ice source: NSIDC daily FAILED ({e}) — {daily_url}")
 
     # 3. global-warming.org — last resort, matches client-side aggregation
+    latest_monthly = None  # populated when global-warming.org path wins
     if not rows:
         try:
-            rows = _fetch_globalwarming_arctic()
+            rows, latest_monthly = _fetch_globalwarming_arctic()
             used.append(f'global-warming.org OK (latest {rows[-1][0] if rows else "?"})')
             source_label = 'global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)'
             print(f"    · ice source: global-warming.org OK — {fallback_url}")
@@ -385,13 +397,24 @@ def fetch_ice():
         raise RuntimeError(f'ice: all sources failed [{"; ".join(used)}]')
 
     rows.sort()
-    annual = sparse_years(rows, every=3)
+    # Don't thin years — the source has monthly observations and the user wants
+    # to see all of them. ~47 annual means renders cleanly at this width.
+    annual = rows
+
+    # 'latest' prefers the actual most-recent monthly observation (with month);
+    # falls back to the latest complete-year average if no monthly was returned.
+    if latest_monthly:
+        ly, lm, lv = latest_monthly
+        latest_obj = {'year': ly, 'month': lm, 'value': round(lv, 2)}
+    else:
+        latest_obj = {'year': rows[-1][0], 'value': round(rows[-1][1], 2)}
+
     return {
         'source': source_label,
         'detail': '; '.join(used),
         'unit': 'million km²',
         'annual': [{'year': y, 'value': round(v, 2)} for y, v in annual],
-        'latest': {'year': rows[-1][0], 'value': round(rows[-1][1], 2)},
+        'latest': latest_obj,
     }
 
 
