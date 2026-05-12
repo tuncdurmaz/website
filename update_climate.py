@@ -270,11 +270,34 @@ def _fetch_globalwarming_arctic():
     text = http_get('https://global-warming.org/api/arctic-api')
     payload = json.loads(text) if isinstance(text, str) else text
 
-    # The API has used several top-level key names over time; try the known ones.
-    # 'arcticData' is the current (post-2025 rename) key; 'arcpiclice' was the
-    # older typo'd key that the dashboard's client-side fallback still references.
+    # Current shape (verified May 2026):
+    #   { "error": null,
+    #     "arcticData": {
+    #       "description": { "title": "Global Sea Ice Extent ...", "missing": -9999, ... },
+    #       "data": { "YYYYMM": { "value": <extent>, "anom": ..., "monthlyMean": ... }, ... }
+    #     }
+    #   }
+    # Despite the endpoint name 'arctic-api', the payload is GLOBAL sea ice extent.
+    ad = payload.get('arcticData') if isinstance(payload, dict) else None
+    if isinstance(ad, dict) and isinstance(ad.get('data'), dict):
+        missing_sentinel = ad.get('description', {}).get('missing', -9999)
+        by_year = {}
+        for ym_key, obj in ad['data'].items():
+            try:
+                y = int(str(ym_key)[:4])
+                ext = float(obj.get('value'))
+            except (TypeError, ValueError, AttributeError):
+                continue
+            if ext <= 0 or ext == missing_sentinel:
+                continue
+            by_year.setdefault(y, []).append(ext)
+        if by_year:
+            return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
+
+    # Legacy fallback: older list-of-rows shapes (arcpiclice etc.) — kept in
+    # case the API reverts or another mirror exposes the old format.
     series = None
-    for key in ('arcticData', 'arcpiclice', 'arcticseaice', 'arctic_sea_ice', 'result', 'data'):
+    for key in ('arcpiclice', 'arcticseaice', 'arctic_sea_ice', 'result', 'data'):
         v = payload.get(key) if isinstance(payload, dict) else None
         if isinstance(v, list) and v:
             series = v
@@ -283,7 +306,7 @@ def _fetch_globalwarming_arctic():
         series = payload
     if series is None:
         seen = list(payload.keys()) if isinstance(payload, dict) else type(payload).__name__
-        raise RuntimeError(f'no recognized data key (top-level: {seen})')
+        raise RuntimeError(f'no recognized data shape (top-level: {seen})')
 
     by_year = {}
     for d in series:
@@ -352,7 +375,7 @@ def fetch_ice():
         try:
             rows = _fetch_globalwarming_arctic()
             used.append(f'global-warming.org OK (latest {rows[-1][0] if rows else "?"})')
-            source_label = 'global-warming.org Arctic API — annual mean (NSIDC unavailable)'
+            source_label = 'global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)'
             print(f"    · ice source: global-warming.org OK — {fallback_url}")
         except Exception as e:
             used.append(f'global-warming.org FAILED: {e}')
