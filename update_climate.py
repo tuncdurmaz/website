@@ -121,10 +121,9 @@ def extend_with_ytd(annual, monthly):
     return out
 
 
-# ────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
 # Fetchers — each returns the shape expected in climate_data.json
-# ────────────────────────────────────────────────────────────────
-
+# ──────────────────────────────────────────────────────────────────
 
 def fetch_co2():
     annual_txt = http_get('https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_annmean_mlo.csv')
@@ -259,92 +258,80 @@ def _parse_nsidc_daily_to_sept(text):
     return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
 
 
-def _parse_arctic_api_yearly(text):
-    """Parse global-warming.org Arctic API payload into yearly means."""
+def _fetch_globalwarming_arctic():
+    """Last-resort fallback: global-warming.org Arctic API.
+       Aggregates `arcpiclice` entries by year, averaging extents — mirrors the
+       client-side fallback in dashboard.html so backend and frontend agree on
+       the same shape when NSIDC is unreachable."""
+    text = http_get('https://global-warming.org/api/arctic-api')
     payload = json.loads(text)
-    rows = payload.get('arcpiclice') or []
     by_year = {}
-
-    for row in rows:
+    for d in payload.get('arcpiclice', []):
         try:
-            year = int(row.get('year'))
-            extent = float(row.get('extent'))
+            y = int(d.get('year'))
+            ext = float(d.get('extent'))
         except (TypeError, ValueError):
             continue
-        if extent <= 0:
+        if ext <= 0:
             continue
-        by_year.setdefault(year, []).append(extent)
-
+        by_year.setdefault(y, []).append(ext)
     return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
 
 
-def _try_fetch_rows(label, urls, parser):
-    """Try multiple URLs for the same dataset and return (rows, detail)."""
-    failures = []
-    for url in urls:
-        try:
-            rows = parser(http_get(url))
-            if rows:
-                latest = rows[-1][0]
-                return rows, f'{label}: {url} (latest {latest})'
-            failures.append(f'{url} -> empty data')
-        except Exception as e:
-            failures.append(f'{url} -> {e}')
-    raise RuntimeError(f'{label} failed: ' + '; '.join(failures))
-
-
 def fetch_ice():
-    """Arctic September extent with resilient fallbacks.
-       Try known NSIDC URL variants first, then fall back to the same
-       Arctic API the front-end already uses."""
-    monthly_urls = [
-        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.0.csv',
-        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.csv',
-        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent.csv',
-    ]
-    daily_urls = [
-        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv',
-        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.csv',
-        'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily.csv',
-    ]
-    arctic_api_url = 'https://global-warming.org/api/arctic-api'
+    """Arctic sea ice extent. Tries authoritative NSIDC sources first; if both
+       are unreachable (as happens when GitHub Actions runners get 404s on the
+       NSIDC paths), falls back to the global-warming.org aggregator the
+       dashboard already trusts as its client-side fallback."""
+    monthly_url  = 'https://noaadata.apps.nsidc.org/NOAA/G02135/north/monthly/data/N_09_extent_v3.0.csv'
+    daily_url    = 'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv'
+    fallback_url = 'https://global-warming.org/api/arctic-api'
 
     rows = []
     used = []
-    try:
-        rows, detail = _try_fetch_rows('monthly', monthly_urls, _parse_nsidc_monthly_sep)
-        used.append(detail)
-    except Exception as e:
-        used.append(str(e))
+    source_label = 'NSIDC — Sea Ice Index v3, Arctic September extent'
 
+    # 1. NSIDC monthly (preferred — September minimum)
+    try:
+        rows = _parse_nsidc_monthly_sep(http_get(monthly_url))
+        used.append(f'NSIDC monthly OK (latest {rows[-1][0] if rows else "?"})')
+        print(f"    · ice source: NSIDC monthly OK — {monthly_url}")
+    except Exception as e:
+        used.append(f'NSIDC monthly FAILED: {e}')
+        print(f"    · ice source: NSIDC monthly FAILED ({e}) — {monthly_url}")
+
+    # 2. NSIDC daily — fill in any missing recent years
     current_year = datetime.utcnow().year
-    needs_daily = (not rows) or (rows[-1][0] < current_year - 1)
-    if needs_daily:
+    if (not rows) or (rows[-1][0] < current_year - 1):
         try:
-            daily_rows, detail = _try_fetch_rows('daily', daily_urls, _parse_nsidc_daily_to_sept)
+            daily_rows = _parse_nsidc_daily_to_sept(http_get(daily_url))
             existing = {y for y, _ in rows}
             added = [(y, v) for y, v in daily_rows if y not in existing]
             rows = sorted(rows + added)
-            used.append(f'{detail}; added {len(added)} years; latest {rows[-1][0] if rows else "?"}')
+            used.append(f'NSIDC daily OK (added {len(added)}, latest {rows[-1][0] if rows else "?"})')
+            print(f"    · ice source: NSIDC daily OK (added {len(added)} years) — {daily_url}")
         except Exception as e:
-            used.append(str(e))
+            used.append(f'NSIDC daily FAILED: {e}')
+            print(f"    · ice source: NSIDC daily FAILED ({e}) — {daily_url}")
 
+    # 3. global-warming.org — last resort, matches client-side aggregation
     if not rows:
         try:
-            rows = _parse_arctic_api_yearly(http_get(arctic_api_url))
-            if rows:
-                used.append(f'arctic-api: {arctic_api_url} (latest {rows[-1][0]})')
+            rows = _fetch_globalwarming_arctic()
+            used.append(f'global-warming.org OK (latest {rows[-1][0] if rows else "?"})')
+            source_label = 'global-warming.org Arctic API — annual mean (NSIDC unavailable)'
+            print(f"    · ice source: global-warming.org OK — {fallback_url}")
         except Exception as e:
-            used.append(f'arctic-api failed: {arctic_api_url} -> {e}')
+            used.append(f'global-warming.org FAILED: {e}')
+            print(f"    · ice source: global-warming.org FAILED ({e}) — {fallback_url}")
 
     if not rows:
-        raise RuntimeError(f'ice: no data ({"; ".join(used)})')
+        raise RuntimeError(f'ice: all sources failed [{"; ".join(used)}]')
 
     rows.sort()
     annual = sparse_years(rows, every=3)
-    source = 'global-warming.org — Arctic API' if any(d.startswith('arctic-api:') for d in used) else 'NSIDC — Sea Ice Index, Arctic September extent'
     return {
-        'source': source,
+        'source': source_label,
         'detail': '; '.join(used),
         'unit': 'million km²',
         'annual': [{'year': y, 'value': round(v, 2)} for y, v in annual],
@@ -352,9 +339,9 @@ def fetch_ice():
     }
 
 
-# ────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
 # Orchestration
-# ────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
 
 FETCHERS = {
     'co2':  fetch_co2,
