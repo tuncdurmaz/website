@@ -260,21 +260,52 @@ def _parse_nsidc_daily_to_sept(text):
 
 def _fetch_globalwarming_arctic():
     """Last-resort fallback: global-warming.org Arctic API.
-       Aggregates `arcpiclice` entries by year, averaging extents — mirrors the
-       client-side fallback in dashboard.html so backend and frontend agree on
-       the same shape when NSIDC is unreachable."""
+       Aggregates entries by year, averaging extents — mirrors the client-side
+       fallback in dashboard.html so backend and frontend agree on the same
+       shape when NSIDC is unreachable.
+
+       Note: the API returns 'year' as a DECIMAL-YEAR string (e.g. '1979.583'),
+       which Python's int() rejects but JS parseInt() accepts. We coerce via
+       float() so monthly observations bucket correctly into integer years."""
     text = http_get('https://global-warming.org/api/arctic-api')
-    payload = json.loads(text)
+    payload = json.loads(text) if isinstance(text, str) else text
+
+    # The API has used several top-level key names over time; try the known ones.
+    series = None
+    for key in ('arcpiclice', 'arcticseaice', 'arctic_sea_ice', 'result', 'data'):
+        v = payload.get(key) if isinstance(payload, dict) else None
+        if isinstance(v, list) and v:
+            series = v
+            break
+    if series is None and isinstance(payload, list):
+        series = payload
+    if series is None:
+        seen = list(payload.keys()) if isinstance(payload, dict) else type(payload).__name__
+        raise RuntimeError(f'no recognized data key (top-level: {seen})')
+
     by_year = {}
-    for d in payload.get('arcpiclice', []):
+    for d in series:
+        if not isinstance(d, dict):
+            continue
+        year_val = d.get('year') or d.get('time') or d.get('date')
+        ext_val  = d.get('extent') or d.get('value') or d.get('area')
         try:
-            y = int(d.get('year'))
-            ext = float(d.get('extent'))
+            y = int(float(year_val))   # tolerate decimal-year strings like '1979.583'
+            ext = float(ext_val)
         except (TypeError, ValueError):
             continue
         if ext <= 0:
             continue
         by_year.setdefault(y, []).append(ext)
+
+    if not by_year:
+        sample = series[0] if series else {}
+        sample_keys = list(sample.keys()) if isinstance(sample, dict) else type(sample).__name__
+        raise RuntimeError(
+            f'parsed {len(series)} rows but extracted 0; '
+            f'sample row keys: {sample_keys}; first row: {str(sample)[:160]}'
+        )
+
     return sorted((y, sum(vs) / len(vs)) for y, vs in by_year.items())
 
 
