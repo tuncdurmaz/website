@@ -165,6 +165,69 @@
       border-top: 1px solid #1e293b;
     }
 
+    /* ── 'Ask me' label that floats beside the FAB ── */
+    #td-chat-label {
+      position: fixed; bottom: 32px; right: 92px; z-index: 9999;
+      pointer-events: none;
+      background: #1e293b;
+      color: #f1f5f9;
+      font: 600 13px/1 Inter, system-ui, sans-serif;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      opacity: 0; transform: translateX(6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    #td-chat-label.visible { opacity: 1; transform: translateX(0); }
+    #td-chat-fab.open ~ #td-chat-label { opacity: 0; }
+
+    /* ── One-time hello bubble (shows a sample question) ── */
+    #td-chat-hello {
+      position: fixed; bottom: 96px; right: 24px; z-index: 9999;
+      max-width: 280px;
+      background: #1e293b;
+      color: #f1f5f9;
+      font: 500 13px/1.45 Inter, system-ui, sans-serif;
+      padding: 12px 14px 12px 16px;
+      border-radius: 14px 14px 4px 14px;
+      border: 1px solid #38bdf8;
+      box-shadow: 0 8px 28px rgba(56,189,248,0.25);
+      opacity: 0; transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    #td-chat-hello.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    #td-chat-hello::after {
+      content: ''; position: absolute; bottom: -7px; right: 18px;
+      width: 12px; height: 12px; background: #1e293b;
+      border-right: 1px solid #38bdf8; border-bottom: 1px solid #38bdf8;
+      transform: rotate(45deg);
+    }
+    #td-chat-hello .td-hello-prompt {
+      display: block; color: #94a3b8; font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;
+    }
+    #td-chat-hello .td-hello-q {
+      cursor: pointer; color: #38bdf8;
+    }
+    #td-chat-hello .td-hello-q:hover { color: #f1f5f9; text-decoration: underline; }
+    #td-chat-hello .td-hello-close {
+      position: absolute; top: 4px; right: 4px;
+      width: 22px; height: 22px; border: 0; background: transparent;
+      color: #64748b; cursor: pointer; font-size: 16px; line-height: 1;
+      border-radius: 50%;
+    }
+    #td-chat-hello .td-hello-close:hover { color: #f1f5f9; background: #0f172a; }
+
+    /* ── One-time gentle pulse on the FAB (synced with bubble) ── */
+    @keyframes td-pulse-once {
+      0%   { box-shadow: 0 4px 20px rgba(56,189,248,0.35), 0 0 0 0   rgba(56,189,248,0.55); }
+      70%  { box-shadow: 0 4px 20px rgba(56,189,248,0.35), 0 0 0 16px rgba(56,189,248,0);    }
+      100% { box-shadow: 0 4px 20px rgba(56,189,248,0.35), 0 0 0 0   rgba(56,189,248,0);    }
+    }
+    #td-chat-fab.td-pulse { animation: td-pulse-once 1.6s ease-out 2; }
+
     /* Mobile adjustments */
     @media (max-width: 480px) {
       #td-chat-panel {
@@ -174,6 +237,8 @@
         border-radius: 12px;
       }
       #td-chat-fab { bottom: 16px; right: 16px; }
+      #td-chat-label { bottom: 24px; right: 84px; font-size: 12px; padding: 6px 10px; }
+      #td-chat-hello { right: 16px; bottom: 88px; max-width: calc(100vw - 32px); }
     }
   `;
   document.head.appendChild(style);
@@ -185,7 +250,7 @@
   // FAB button
   const fab = document.createElement('button');
   fab.id = 'td-chat-fab';
-  fab.setAttribute('aria-label', 'Open chat assistant');
+  fab.setAttribute('aria-label', "Ask Tunç's AI assistant");
   fab.innerHTML = `
     <svg class="td-chat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
@@ -196,6 +261,19 @@
     </svg>
   `;
   document.body.appendChild(fab);
+
+  // Permanent 'Ask me' label floating beside the FAB (always visible, fades out when chat opens)
+  const labelEl = document.createElement('div');
+  labelEl.id = 'td-chat-label';
+  labelEl.setAttribute('aria-hidden', 'true');  // FAB's aria-label already covers it for screen readers
+  labelEl.textContent = 'Ask me';
+  document.body.appendChild(labelEl);
+
+  // One-time hello bubble — shows a single sample question on first device visit
+  const helloEl = document.createElement('div');
+  helloEl.id = 'td-chat-hello';
+  helloEl.setAttribute('role', 'status');
+  document.body.appendChild(helloEl);
 
   // Chat panel
   const panel = document.createElement('div');
@@ -263,8 +341,69 @@
     isOpen = !isOpen;
     fab.classList.toggle('open', isOpen);
     panel.classList.toggle('open', isOpen);
-    if (isOpen) setTimeout(() => inputEl.focus(), 300);
+    if (isOpen) {
+      setTimeout(() => inputEl.focus(), 300);
+      dismissHello();  // any interaction with the FAB also dismisses the hello bubble
+    }
   });
+
+  // ═══════════════════════════════════════════
+  //  Discovery affordances: label + one-time hello bubble + pulse
+  // ═══════════════════════════════════════════
+
+  // The permanent 'Ask me' label fades in shortly after load (every visit)
+  setTimeout(() => labelEl.classList.add('visible'), 800);
+
+  // The hello bubble and FAB pulse fire only on first device visit
+  const HELLO_KEY = 'tdChatHelloShown';
+  let helloShown = false;
+  let helloTimer = null;
+  function dismissHello() {
+    if (!helloShown) return;
+    helloEl.classList.remove('visible');
+    if (helloTimer) { clearTimeout(helloTimer); helloTimer = null; }
+    helloShown = false;
+  }
+
+  function safeLocal(action) {
+    // localStorage can throw in private-mode Safari; degrade gracefully
+    try { return action(); } catch (e) { return null; }
+  }
+  const alreadySeen = safeLocal(() => localStorage.getItem(HELLO_KEY)) === '1';
+
+  if (!alreadySeen) {
+    // Pick ONE random question from the existing pool — no cycling
+    const q = questionPool[Math.floor(Math.random() * questionPool.length)];
+    helloEl.innerHTML = `
+      <button class="td-hello-close" aria-label="Dismiss">×</button>
+      <span class="td-hello-prompt">Try asking</span>
+      <span class="td-hello-q">${q}</span>
+    `;
+    // Click the sample question to open the chat with it pre-filled
+    helloEl.querySelector('.td-hello-q').addEventListener('click', () => {
+      dismissHello();
+      if (!isOpen) fab.click();
+      setTimeout(() => window.tdAsk(q), 350);
+    });
+    helloEl.querySelector('.td-hello-close').addEventListener('click', dismissHello);
+
+    // Show after 2.5s so it doesn't fight initial content render
+    setTimeout(() => {
+      helloShown = true;
+      helloEl.classList.add('visible');
+      fab.classList.add('td-pulse');                          // gentle pulse, runs twice
+      setTimeout(() => fab.classList.remove('td-pulse'), 3300);
+      helloTimer = setTimeout(dismissHello, 9000);            // auto-dismiss after ~9s
+      safeLocal(() => localStorage.setItem(HELLO_KEY, '1'));  // never show again on this device
+    }, 2500);
+
+    // Any scroll/click outside the bubble also dismisses
+    const onAnyInteraction = () => dismissHello();
+    window.addEventListener('scroll', onAnyInteraction, { passive: true, once: true });
+    document.addEventListener('click', (e) => {
+      if (helloShown && !helloEl.contains(e.target) && e.target !== fab) dismissHello();
+    }, { capture: true });
+  }
 
   // Send on Enter
   inputEl.addEventListener('keydown', (e) => {
