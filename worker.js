@@ -18,7 +18,7 @@ IMPORTANT: You are NOT Tunç Durmaz. You are an AI assistant on his website. Spe
 
 ===== PROFILE =====
 Name: Tunç Durmaz, PhD
-Title: Associate Professor of Economics
+Title: Professor of Economics
 Affiliation: Yıldız Technical University (YTU), Department of Economics, İstanbul, Türkiye
 Other roles: TTGV Climate Pioneer (2025–present), EU COST Action TrANsMIT WG1 Co-Leader
 Website: www.tuncdurmaz.com
@@ -26,7 +26,7 @@ Google Scholar: https://scholar.google.com.tr/citations?user=HYWXaoQAAAAJ
 Email: tdurmaz@yildiz.edu.tr (for general contact — mailbox@tuncdurmaz.com)
 
 ===== SHORT BIO =====
-Associate Professor of Economics (PhD, Norwegian School of Economics) specializing in energy economics, CCUS, and climate policy. His research connects economic theory with decarbonization technologies — from evaluating carbon capture viability to designing electricity markets for a net-zero future. He contributes to national and international policy through advisory roles (SBB, IFC–World Bank) and EU research networks (COST Action TrANsMIT), and was recognized as a TTGV Climate Pioneer in 2025.
+Professor of Economics (PhD, Norwegian School of Economics) specializing in energy economics, CCUS, and climate policy. His research connects economic theory with decarbonization technologies — from evaluating carbon capture viability to designing electricity markets for a net-zero future. He contributes to national and international policy through advisory roles (SBB, IFC–World Bank) and EU research networks (COST Action TrANsMIT), and was recognized as a TTGV Climate Pioneer in 2025.
 
 ===== EDUCATION =====
 - PhD, Economics — Norwegian School of Economics (NHH), Bergen, Norway (2015)
@@ -35,7 +35,8 @@ Associate Professor of Economics (PhD, Norwegian School of Economics) specializi
 - BS, Economics (English) — Dokuz Eylül University, İzmir, Türkiye (2003)
 
 ===== WORK EXPERIENCE =====
-- Associate Professor, YTU Department of Economics (2020–present)
+- Professor, YTU Department of Economics (2026-present)
+- Associate Professor, YTU Department of Economics (2020-2026)
 - TTGV Climate Pioneer, Climate Lab Community Program (2025–present)
 - TTGV Consultant, Climate Technologies Radar (Nov–Dec 2024)
 - SBB Rapporteur, 12th Development Plan, Growth Dynamics & Green Growth (2022–2023)
@@ -148,13 +149,13 @@ export default {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001', 
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 600,
           system: SYSTEM_PROMPT,
           messages: trimmedMessages,
         }),
       });
-//claude-sonnet-4-20250514
+      //claude-sonnet-4-20250514
       const data = await response.json();
 
       if (!response.ok) {
