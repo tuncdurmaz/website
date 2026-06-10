@@ -343,7 +343,7 @@
       },
       {
         "year": 1915,
-        "value": -0.14
+        "value": -0.15
       },
       {
         "year": 1920,
@@ -371,7 +371,7 @@
       },
       {
         "year": 1950,
-        "value": -0.18
+        "value": -0.17
       },
       {
         "year": 1955,
@@ -379,7 +379,7 @@
       },
       {
         "year": 1960,
-        "value": -0.02
+        "value": -0.03
       },
       {
         "year": 1965,
@@ -407,7 +407,7 @@
       },
       {
         "year": 1995,
-        "value": 0.44
+        "value": 0.45
       },
       {
         "year": 2000,
@@ -419,7 +419,7 @@
       },
       {
         "year": 2010,
-        "value": 0.72
+        "value": 0.73
       },
       {
         "year": 2015,
@@ -439,7 +439,7 @@
       "value": 1.19
     }
   },
-  "last_updated": "June 10, 2026 (14:15 UTC)",
+  "last_updated": "June 10, 2026 (17:49 UTC)",
   "ice": {
     "source": "global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)",
     "detail": "NSIDC monthly FAILED: HTTP Error 404: Not Found; NSIDC daily FAILED: HTTP Error 404: Not Found; global-warming.org OK (latest 2025)",
