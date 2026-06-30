@@ -439,10 +439,10 @@
       "value": 1.19
     }
   },
-  "last_updated": "June 30, 2026 (19:31 UTC)",
+  "last_updated": "June 30, 2026 (20:35 UTC)",
   "ice": {
     "source": "global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)",
-    "detail": "NSIDC monthly FAILED: HTTP Error 404: Not Found; NSIDC daily FAILED: HTTP Error 404: Not Found; global-warming.org OK (latest 2025)",
+    "detail": "NSIDC monthly FAILED: <urlopen error timed out>; NSIDC daily FAILED: <urlopen error timed out>; global-warming.org OK (latest 2025)",
     "unit": "million km²",
     "annual": [
       {
