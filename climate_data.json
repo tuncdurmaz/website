@@ -137,13 +137,13 @@
       },
       {
         "year": 2026,
-        "value": 430.32
+        "value": 430.5
       }
     ],
     "latest": {
       "year": 2026,
-      "month": 5,
-      "value": 432.34
+      "month": 6,
+      "value": 431.44
     }
   },
   "ch4": {
@@ -172,7 +172,7 @@
       },
       {
         "year": 1994,
-        "value": 1742.0
+        "value": 1742.1
       },
       {
         "year": 1996,
@@ -180,7 +180,7 @@
       },
       {
         "year": 1998,
-        "value": 1765.5
+        "value": 1765.6
       },
       {
         "year": 2000,
@@ -192,11 +192,11 @@
       },
       {
         "year": 2004,
-        "value": 1777.0
+        "value": 1777.1
       },
       {
         "year": 2006,
-        "value": 1775.0
+        "value": 1774.9
       },
       {
         "year": 2008,
@@ -212,11 +212,11 @@
       },
       {
         "year": 2014,
-        "value": 1822.5
+        "value": 1822.6
       },
       {
         "year": 2016,
-        "value": 1843.1
+        "value": 1843.2
       },
       {
         "year": 2018,
@@ -236,13 +236,13 @@
       },
       {
         "year": 2026,
-        "value": 1940.7
+        "value": 1939.6
       }
     ],
     "latest": {
       "year": 2026,
-      "month": 2,
-      "value": 1940.5
+      "month": 3,
+      "value": 1937.9
     }
   },
   "n2o": {
@@ -299,13 +299,13 @@
       },
       {
         "year": 2026,
-        "value": 339.74
+        "value": 339.75
       }
     ],
     "latest": {
       "year": 2026,
-      "month": 2,
-      "value": 339.75
+      "month": 3,
+      "value": 339.76
     }
   },
   "temp": {
@@ -439,7 +439,7 @@
       "value": 1.19
     }
   },
-  "last_updated": "July 06, 2026 (15:01 UTC)",
+  "last_updated": "July 06, 2026 (16:57 UTC)",
   "ice": {
     "source": "global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)",
     "detail": "NSIDC monthly FAILED: HTTP Error 404: Not Found; NSIDC daily FAILED: HTTP Error 404: Not Found; global-warming.org OK (latest 2025)",
