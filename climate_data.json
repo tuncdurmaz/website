@@ -315,11 +315,11 @@
     "annual": [
       {
         "year": 1880,
-        "value": -0.18
+        "value": -0.17
       },
       {
         "year": 1885,
-        "value": -0.34
+        "value": -0.33
       },
       {
         "year": 1890,
@@ -331,11 +331,11 @@
       },
       {
         "year": 1900,
-        "value": -0.09
+        "value": -0.08
       },
       {
         "year": 1905,
-        "value": -0.27
+        "value": -0.26
       },
       {
         "year": 1910,
@@ -343,11 +343,11 @@
       },
       {
         "year": 1915,
-        "value": -0.15
+        "value": -0.14
       },
       {
         "year": 1920,
-        "value": -0.28
+        "value": -0.27
       },
       {
         "year": 1925,
@@ -355,7 +355,7 @@
       },
       {
         "year": 1930,
-        "value": -0.16
+        "value": -0.15
       },
       {
         "year": 1935,
@@ -371,7 +371,7 @@
       },
       {
         "year": 1950,
-        "value": -0.18
+        "value": -0.17
       },
       {
         "year": 1955,
@@ -423,7 +423,7 @@
       },
       {
         "year": 2015,
-        "value": 0.9
+        "value": 0.89
       },
       {
         "year": 2020,
@@ -431,15 +431,15 @@
       },
       {
         "year": 2025,
-        "value": 1.19
+        "value": 1.18
       }
     ],
     "latest": {
       "year": 2025,
-      "value": 1.19
+      "value": 1.18
     }
   },
-  "last_updated": "October 09, 2026 (11:10 UTC)",
+  "last_updated": "October 09, 2026 (16:40 UTC)",
   "ice": {
     "source": "global-warming.org — GLOBAL sea ice extent, annual mean (NSIDC unavailable)",
     "detail": "NSIDC monthly FAILED: HTTP Error 404: Not Found; NSIDC daily FAILED: HTTP Error 404: Not Found; global-warming.org OK (latest 2025)",
@@ -628,8 +628,8 @@
     ],
     "latest": {
       "year": 2026,
-      "month": 8,
-      "value": 22.02
+      "month": 9,
+      "value": 22.13
     }
   }
 }
